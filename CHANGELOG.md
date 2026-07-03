@@ -34,6 +34,9 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 - Garniture typographique lapidaire autour du titre `PetrosLabs` : petits
   losanges bronze (interpuncts) de part et d'autre, avec filets qui
   s'estompent vers l'extérieur à partir de `sm:`.
+- Barre de défilement personnalisée : bronze au repos, teal au survol/actif
+  (même logique que `::selection`), à la place du gris par défaut du
+  navigateur.
 
 ### Modifié
 - Retrait des références à la métaphore de la « forge » au profit du
