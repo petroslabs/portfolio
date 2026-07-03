@@ -25,6 +25,9 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
   (séparateur méandre grec).
 - `README.md` : présentation du projet, état d'avancement, stack et
   commandes de dev/build, tenu à jour au fil du projet.
+- Composant `<twig:Column>` : colonne dorique décorative (chapiteau, fût
+  cannelé, base) en filigrane sur les bords du viewport, visible à partir de
+  `lg` uniquement — renforce l'ambiance temple antique sur grand écran.
 
 ### Modifié
 - Retrait des références à la métaphore de la « forge » au profit du
