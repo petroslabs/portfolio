@@ -39,6 +39,8 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 - Retrait des références à la métaphore de la « forge » au profit du
   vocabulaire « labs / laboratoire », plus proche de l'identité PetrosLabs.
 - Retrait du lien vers X (réseau social).
+- Texte du pied de page : « quelque part entre Sparte et le terminal »
+  (à la place de « construit à la main, entre pierre & terminal »).
 
 ### Corrigé
 - Lien Email du hub : utilisation du schéma `mailto:` (le lien ouvrait une

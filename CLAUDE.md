@@ -79,6 +79,10 @@ Polices (`@theme` → `fontFamily`) :
 - Avant de générer de nouvelles pages/fonctionnalités (blog, projets, admin),
   proposer l'arborescence et attendre validation avant d'exécuter, comme pour
   la landing initiale.
+- **Ne jamais commit/push automatiquement.** Une fois le travail terminé,
+  présenter ce qui a été fait puis demander explicitement avant de committer
+  et pousser. Ne pas considérer un "go" donné une fois comme valable pour la
+  suite de la conversation — redemander à chaque fois.
 - Respecter l'accessibilité : balises sémantiques, `alt` sur les images,
   contrastes suffisants malgré le fond sombre.
 - Code simple et lisible, pas de sur-ingénierie ni d'abstraction anticipée.
