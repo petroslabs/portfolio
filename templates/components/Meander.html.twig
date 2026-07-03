@@ -1,0 +1,21 @@
+{#
+    Séparateur « méandre » (grecque) — motif antique répété en bronze,
+    flanqué de deux filets qui se fondent dans le fond.
+    Usage : <twig:Meander /> ou <twig:Meander class="my-16" />
+#}
+{% props class = '' %}
+<div class="flex items-center justify-center gap-4 {{ class }}" role="presentation" aria-hidden="true">
+    <span class="h-px flex-1 bg-gradient-to-r from-transparent to-bronze/40"></span>
+    <svg width="132" height="24" viewBox="0 0 132 24" fill="none"
+         class="shrink-0 text-bronze/60"
+         stroke="currentColor" stroke-width="1.5" stroke-linejoin="miter">
+        <defs>
+            <pattern id="petros-meander" width="24" height="24" patternUnits="userSpaceOnUse">
+                {# Spirale carrée (clé grecque) posée sur un filet continu #}
+                <path d="M4 20 V4 H20 V20 H9 V9 H15 V15 H12 M0 22 H24" />
+            </pattern>
+        </defs>
+        <rect width="132" height="24" fill="url(#petros-meander)" stroke="none" />
+    </svg>
+    <span class="h-px flex-1 bg-gradient-to-l from-transparent to-bronze/40"></span>
+</div>
