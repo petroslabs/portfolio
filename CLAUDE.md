@@ -5,10 +5,10 @@ progressivement un blog, des projets et un espace admin.
 
 ## État actuel
 
-Seule la **landing page (`/`)** est implémentée. Le blog (`/blog`), les
-projets (`/projects`) et l'admin (`Admin\`) ne sont **pas encore développés**
-— le code est structuré pour les accueillir sans refactoring, mais ne pas les
-générer sans demande explicite.
+La **landing page (`/`)** et la **page Projets (`/projects`)** sont
+implémentées. Le blog (`/blog`) et l'admin (`Admin\`) ne sont **pas encore
+développés** — le code est structuré pour les accueillir sans refactoring,
+mais ne pas les générer sans demande explicite.
 
 ## Direction artistique — à respecter impérativement
 
@@ -44,9 +44,10 @@ Polices (`@theme` → `fontFamily`) :
   `tailwind.config.js`. Build : `php bin/console tailwind:build --watch` (dev)
   / `--minify` (prod).
 - **symfony/ux-twig-component** pour factoriser les motifs répétés en
-  composants Twig (`<twig:LinkCard>`, `<twig:Meander>` dans
-  `templates/components/`) — préférer cette approche à la duplication de
-  longues chaînes de classes ou à de simples `{% include %}`.
+  composants Twig (`<twig:LinkCard>`, `<twig:ProjectCard>`, `<twig:Meander>`,
+  `<twig:Column>`, `<twig:SiteFooter>` dans `templates/components/`) —
+  préférer cette approche à la duplication de longues chaînes de classes ou
+  à de simples `{% include %}`.
 - Éviter le CSS vanilla hors nécessité stricte (keyframes, texture de fond) :
   privilégier les utilitaires Tailwind.
 
@@ -54,14 +55,18 @@ Polices (`@theme` → `fontFamily`) :
 
 - `src/Controller/HomeController.php` : route `/`, reçoit le contenu du hub
   via injection de paramètres (bind dans `config/services.yaml`). Conçu pour
-  cohabiter avec de futurs `BlogController`, `ProjectController`, `Admin\…`
-  sans modification.
-- `config/hub.yaml` : contenu du hub (profil + grille de liens) **en
-  configuration YAML**, pas en base de données. Ce choix est volontaire et
-  temporaire — le jour où l'espace admin est développé, ce contenu bascule en
-  base ; ne pas anticiper cette migration avant qu'elle soit demandée.
-- `templates/base.html.twig` : layout commun (polices, metas, fond).
+  cohabiter avec de futurs `BlogController`, `Admin\…` sans modification.
+- `src/Controller/ProjectController.php` : route `/projects`, même pattern
+  d'injection que `HomeController`, contenu depuis `config/projects.yaml`.
+- `config/hub.yaml` / `config/projects.yaml` : contenu **en configuration
+  YAML**, pas en base de données. Ce choix est volontaire et temporaire — le
+  jour où l'espace admin est développé, ce contenu bascule en base (les
+  projets y seront alors ajoutables directement) ; ne pas anticiper cette
+  migration avant qu'elle soit demandée.
+- `templates/base.html.twig` : layout commun (polices, metas, fond, colonnes
+  décoratives).
 - `templates/home/index.html.twig` : la landing, étend `base.html.twig`.
+- `templates/projects/index.html.twig` : la page Projets, étend `base.html.twig`.
 - `templates/components/` : composants Twig réutilisables.
 
 ## Attentes de collaboration

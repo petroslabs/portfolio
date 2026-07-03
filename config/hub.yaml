@@ -26,5 +26,5 @@ parameters:
         - { label: 'GitHub',   url: 'https://github.com/petroslabs', icon: 'github',   accent: 'teal',   external: true,  description: 'Le code, brut' }
         - { label: 'Email',    url: 'mailto:petroslabs@proton.me', icon: 'mail', accent: 'bronze', external: false, description: 'Écris-moi' }
         - { label: 'Blog',     url: '#', icon: 'blog',     accent: 'teal',   external: false, description: 'Notes du laboratoire — bientôt' }
-        - { label: 'Projets',  url: '#', icon: 'projects', accent: 'bronze', external: false, description: 'Ce que je construis — bientôt' }
+        - { label: 'Projets',  url: '/projects', icon: 'projects', accent: 'bronze', external: false, description: 'Ce que je construis' }
         - { label: 'LinkedIn', url: '#', icon: 'linkedin', accent: 'teal',   external: true,  description: 'Le parcours' }

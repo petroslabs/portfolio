@@ -7,6 +7,8 @@
 imports:
     # Contenu de la landing (profil + liens du hub)
     - { resource: hub.yaml }
+    # Contenu de la page Projets
+    - { resource: projects.yaml }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
@@ -21,6 +23,8 @@ services:
             # Contenu du hub injecté depuis config/hub.yaml
             $profile: '%app.profile%'
             $hubLinks: '%app.hub_links%'
+            # Contenu de la page Projets injecté depuis config/projects.yaml
+            $projects: '%app.projects%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
