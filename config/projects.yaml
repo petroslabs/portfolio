@@ -6,24 +6,10 @@
 parameters:
     # status : 'in_progress' | 'done' | 'archived'
     app.projects:
-        - name: 'Projet Un'
-          summary: 'Description courte du projet (1 à 2 phrases). Remplace ce texte par le vrai résumé.'
-          image: 'images/projects/placeholder-1.png'
-          stack: ['Symfony', 'Tailwind', 'PostgreSQL']
+        - name: 'PetrosLabs'
+          summary: "Ce site : un hub Symfony reliant blog, projets et réseaux, avec une direction artistique entre Grèce antique et laboratoire de dev moderne."
+          image: 'images/projects/project-1.png'
+          stack: ['Symfony', 'Tailwind CSS v4', 'AssetMapper']
           status: 'in_progress'
-          repo_url: '#'
-          demo_url: '#'
-        - name: 'Projet Deux'
-          summary: 'Description courte du projet (1 à 2 phrases). Remplace ce texte par le vrai résumé.'
-          image: 'images/projects/placeholder-2.png'
-          stack: ['PHP', 'API Platform', 'Docker']
-          status: 'done'
-          repo_url: '#'
-          demo_url: '#'
-        - name: 'Projet Trois'
-          summary: 'Description courte du projet (1 à 2 phrases). Remplace ce texte par le vrai résumé.'
-          image: 'images/projects/placeholder-3.png'
-          stack: ['Rust', 'CLI']
-          status: 'archived'
-          repo_url: '#'
+          repo_url: 'https://github.com/petroslabs/portfolio'
           demo_url: ~
