@@ -25,9 +25,15 @@
 
         {# Titre + tagline terminal + bio #}
         <div class="mt-5 text-center">
-            <h1 class="font-display text-4xl font-bold tracking-wide text-parchment sm:text-5xl">
-                {{ profile.name }}
-            </h1>
+            <div class="flex items-center justify-center gap-2 sm:gap-4">
+                <span class="hidden h-px w-9 bg-gradient-to-l from-bronze/60 to-transparent sm:block" aria-hidden="true"></span>
+                <span class="size-1.5 shrink-0 rotate-45 bg-bronze/70" aria-hidden="true"></span>
+                <h1 class="font-display text-4xl font-bold tracking-wide text-parchment sm:text-5xl">
+                    {{ profile.name }}
+                </h1>
+                <span class="size-1.5 shrink-0 rotate-45 bg-bronze/70" aria-hidden="true"></span>
+                <span class="hidden h-px w-9 bg-gradient-to-r from-bronze/60 to-transparent sm:block" aria-hidden="true"></span>
+            </div>
 
             <p class="mt-3 font-mono text-sm text-teal">
                 <span class="text-parchment-dim">~/petroslabs</span>
