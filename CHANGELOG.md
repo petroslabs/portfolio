@@ -52,6 +52,8 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 - Texte du pied de page : « quelque part entre Sparte et le terminal »
   (à la place de « construit à la main, entre pierre & terminal »).
 - Lien "Projets" du hub : pointe désormais vers `/projects` au lieu de `#`.
+- Premier projet de la vitrine remplacé par ce site lui-même (PetrosLabs),
+  avec une vraie capture d'écran à la place du placeholder.
 
 ### Corrigé
 - Lien Email du hub : utilisation du schéma `mailto:` (le lien ouvrait une
