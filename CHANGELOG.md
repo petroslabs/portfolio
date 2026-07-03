@@ -28,6 +28,9 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 - Composant `<twig:Column>` : colonne dorique décorative (chapiteau, fût
   cannelé, base) en filigrane sur les bords du viewport, visible à partir de
   `lg` uniquement — renforce l'ambiance temple antique sur grand écran.
+- Halo teal en bas de page, en complément du halo bronze existant en haut :
+  équilibre l'ambiance chaude/froide sur toute la hauteur, pas seulement au
+  survol des cartes.
 
 ### Modifié
 - Retrait des références à la métaphore de la « forge » au profit du
