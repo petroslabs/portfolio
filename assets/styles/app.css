@@ -44,12 +44,16 @@
 }
 
 @layer base {
-    /* Texture pierre : grain très discret + halo bronze en haut de page */
+    /* Texture pierre : grain très discret + halo bronze en haut, teal en bas
+       (équilibre chaud/froid sur toute la hauteur, pas seulement au survol) */
     body {
         background-color: var(--color-charcoal);
         background-image:
             radial-gradient(1100px 520px at 50% -8%,
                 color-mix(in oklab, var(--color-bronze) 9%, transparent),
+                transparent 70%),
+            radial-gradient(1100px 560px at 50% 108%,
+                color-mix(in oklab, var(--color-teal) 8%, transparent),
                 transparent 70%),
             url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
         background-attachment: fixed;
