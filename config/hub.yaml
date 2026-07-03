@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+#
+# Contenu de la landing (hub central).
+# Volontairement en configuration pour l'instant : on basculera en base de
+# données quand l'espace Admin arrivera. Injecté dans HomeController via un bind
+# défini dans config/services.yaml.
+parameters:
+    # Identité / entête du hub
+    app.profile:
+        name: 'PetrosLabs'
+        # Tagline courte affichée en monospace (« terminal »). À remplacer.
+        tagline: 'ancient discipline, modern code'
+        # Bio courte (2-3 lignes). Placeholder à remplacer.
+        bio: >-
+            Développeur. Ici, la rigueur spartiate rencontre le code
+            d'aujourd'hui, entre colonnes de marbre et lueurs de terminal.
+            Bienvenue au laboratoire.
+        # Chemins AssetMapper (relatifs à assets/)
+        banner: 'images/banner.png'
+        logo: 'images/logo.png'
+
+    # Grille de liens du hub.
+    # icon : clé mappée dans le composant LinkCard (github, mail, blog, projects,
+    #        linkedin, link). accent : 'teal' ou 'bronze' (lueur au survol).
+    app.hub_links:
+        - { label: 'GitHub',   url: 'https://github.com/petroslabs', icon: 'github',   accent: 'teal',   external: true,  description: 'Le code, brut' }
+        - { label: 'Email',    url: 'mailto:petroslabs@proton.me', icon: 'mail', accent: 'bronze', external: false, description: 'Écris-moi' }
+        - { label: 'Blog',     url: '#', icon: 'blog',     accent: 'teal',   external: false, description: 'Notes du laboratoire — bientôt' }
+        - { label: 'Projets',  url: '#', icon: 'projects', accent: 'bronze', external: false, description: 'Ce que je construis — bientôt' }
+        - { label: 'LinkedIn', url: '#', icon: 'linkedin', accent: 'teal',   external: true,  description: 'Le parcours' }

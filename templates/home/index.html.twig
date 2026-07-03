@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ profile.name }} — le laboratoire de Pierre{% endblock %}
+
+{% block body %}
+<div class="mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 pb-10 sm:px-6">
+
+    {# ── Entête : logo + identité ────────────────────────────────────────── #}
+    <header class="animate-rise">
+        {# Bannière — désactivée pour le moment, réactiver + restaurer la marge
+           négative du logo ci-dessous ("-mt-14 ... sm:-mt-16") le jour venu
+        <div class="relative mt-6 overflow-hidden rounded-2xl border border-parchment/10 shadow-lg sm:mt-10">
+            <img src="{{ asset(profile.banner) }}" alt="Bannière de {{ profile.name }}"
+                 class="h-36 w-full object-cover sm:h-52" width="1600" height="400" loading="eager">
+            <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/30 to-transparent"></div>
+        </div>
+        #}
+
+        {# Logo / avatar #}
+        <div class="mt-8 flex justify-center sm:mt-10">
+            <img src="{{ asset(profile.logo) }}" alt="Logo de {{ profile.name }}"
+                 class="size-28 rounded-full border-2 border-bronze/60 bg-charcoal object-cover shadow-[0_0_40px_-8px] shadow-bronze/40 sm:size-32"
+                 width="256" height="256" loading="eager">
+        </div>
+
+        {# Titre + tagline terminal + bio #}
+        <div class="mt-5 text-center">
+            <h1 class="font-display text-4xl font-bold tracking-wide text-parchment sm:text-5xl">
+                {{ profile.name }}
+            </h1>
+
+            <p class="mt-3 font-mono text-sm text-teal">
+                <span class="text-parchment-dim">~/petroslabs</span>
+                <span class="text-bronze">$</span>
+                {{ profile.tagline }}<span class="ml-0.5 inline-block animate-blink text-bronze" aria-hidden="true">_</span>
+            </p>
+
+            <p class="mx-auto mt-5 max-w-xl text-balance leading-relaxed text-parchment-dim">
+                {{ profile.bio }}
+            </p>
+        </div>
+    </header>
+
+    <twig:Meander class="my-10 animate-rise sm:my-12" />
+
+    {# ── Grille de liens ───────────────────────────────────────────────── #}
+    <main>
+        <h2 class="mb-4 text-center font-mono text-xs uppercase tracking-[0.3em] text-parchment-dim">
+            <span class="text-teal">//</span> l'atelier
+        </h2>
+
+        <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {% for link in links %}
+                <li class="animate-rise" style="animation-delay: {{ 120 + loop.index0 * 70 }}ms">
+                    <twig:LinkCard
+                        label="{{ link.label }}"
+                        url="{{ link.url }}"
+                        icon="{{ link.icon }}"
+                        accent="{{ link.accent }}"
+                        :external="link.external"
+                        description="{{ link.description|default('') }}"
+                    />
+                </li>
+            {% endfor %}
+        </ul>
+    </main>
+
+    <twig:Meander class="my-10 sm:my-12" />
+
+    {# ── Pied de page ──────────────────────────────────────────────────── #}
+    <footer class="mt-auto text-center">
+        <p class="font-mono text-xs text-parchment-dim/70">
+            © {{ 'now'|date('Y') }} {{ profile.name }} — construit à la main, entre pierre &amp; terminal.
+        </p>
+    </footer>
+
+</div>
+{% endblock %}
