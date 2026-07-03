@@ -8,6 +8,7 @@ parameters:
     app.projects:
         - name: 'PetrosLabs'
           summary: "Ce site : un hub Symfony reliant blog, projets et réseaux, avec une direction artistique entre Grèce antique et laboratoire de dev moderne."
+          # TODO: compresser cette image (2,6 Mo actuellement) — viser ~150-300 Ko / WebP
           image: 'images/projects/project-1.png'
           stack: ['Symfony', 'Tailwind CSS v4', 'AssetMapper']
           status: 'in_progress'
