@@ -67,4 +67,30 @@
             transition-duration: 0.001ms !important;
         }
     }
+
+    /* Barre de défilement : bronze au repos, s'allume en teal à l'interaction
+       (même logique que ::selection) — évite le gris par défaut du navigateur */
+    html {
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-bronze) var(--color-charcoal-800);
+    }
+
+    ::-webkit-scrollbar {
+        width: 11px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background-color: var(--color-charcoal-800);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: var(--color-bronze);
+        border: 2px solid var(--color-charcoal-800);
+        border-radius: 9999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover,
+    ::-webkit-scrollbar-thumb:active {
+        background-color: var(--color-teal);
+    }
 }
