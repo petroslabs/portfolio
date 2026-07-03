@@ -37,6 +37,13 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 - Barre de défilement personnalisée : bronze au repos, teal au survol/actif
   (même logique que `::selection`), à la place du gris par défaut du
   navigateur.
+- Page Projets (`/projects`) : vitrine des projets avec image, résumé, stack
+  technique, badge de statut (en cours / terminé / archivé) et liens code/démo.
+  `ProjectController` dédié, contenu piloté par `config/projects.yaml` (même
+  logique que `hub.yaml` — migrera en base de données quand l'espace Admin
+  sera développé). Nouveau composant `<twig:ProjectCard>`.
+- Composant `<twig:SiteFooter>` : pied de page factorisé, réutilisé par la
+  landing et la page Projets.
 
 ### Modifié
 - Retrait des références à la métaphore de la « forge » au profit du
@@ -44,6 +51,7 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 - Retrait du lien vers X (réseau social).
 - Texte du pied de page : « quelque part entre Sparte et le terminal »
   (à la place de « construit à la main, entre pierre & terminal »).
+- Lien "Projets" du hub : pointe désormais vers `/projects` au lieu de `#`.
 
 ### Corrigé
 - Lien Email du hub : utilisation du schéma `mailto:` (le lien ouvrait une

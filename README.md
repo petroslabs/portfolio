@@ -10,8 +10,8 @@ lueurs teal/bronze nocturnes). Détails complets dans [`CLAUDE.md`](CLAUDE.md).
 ## État du projet
 
 - ✅ Landing page (`/`) — hub central avec bannière, logo, bio et grille de liens
+- ✅ Projets (`/projects`) — vitrine des projets
 - ⬜ Blog (`/blog`)
-- ⬜ Projets (`/projects`)
 - ⬜ Espace admin (`Admin\`)
 
 Voir [`CHANGELOG.md`](CHANGELOG.md) pour le détail des évolutions.
@@ -58,11 +58,13 @@ php bin/console tailwind:build --minify
 
 ```
 config/hub.yaml              # Contenu de la landing (profil + liens du hub)
-src/Controller/               # HomeController (puis Blog/Project/Admin à venir)
+config/projects.yaml         # Contenu de la page Projets
+src/Controller/               # HomeController, ProjectController (puis Blog/Admin à venir)
 templates/
 ├── base.html.twig            # Layout commun
 ├── home/                     # Landing page
-└── components/                # Composants Twig réutilisables (LinkCard, Meander…)
+├── projects/                 # Page Projets
+└── components/                # Composants Twig réutilisables (LinkCard, ProjectCard, Meander, SiteFooter…)
 assets/styles/app.css         # Thème Tailwind (@theme : palette, polices, animations)
 ```
 

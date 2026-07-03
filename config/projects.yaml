@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+#
+# Contenu de la page Projets, en configuration pour l'instant — comme
+# config/hub.yaml. Migrera en base de données quand l'espace Admin sera
+# développé (les projets y seront alors ajoutables directement).
+parameters:
+    # status : 'in_progress' | 'done' | 'archived'
+    app.projects:
+        - name: 'Projet Un'
+          summary: 'Description courte du projet (1 à 2 phrases). Remplace ce texte par le vrai résumé.'
+          image: 'images/projects/placeholder-1.png'
+          stack: ['Symfony', 'Tailwind', 'PostgreSQL']
+          status: 'in_progress'
+          repo_url: '#'
+          demo_url: '#'
+        - name: 'Projet Deux'
+          summary: 'Description courte du projet (1 à 2 phrases). Remplace ce texte par le vrai résumé.'
+          image: 'images/projects/placeholder-2.png'
+          stack: ['PHP', 'API Platform', 'Docker']
+          status: 'done'
+          repo_url: '#'
+          demo_url: '#'
+        - name: 'Projet Trois'
+          summary: 'Description courte du projet (1 à 2 phrases). Remplace ce texte par le vrai résumé.'
+          image: 'images/projects/placeholder-3.png'
+          stack: ['Rust', 'CLI']
+          status: 'archived'
+          repo_url: '#'
+          demo_url: ~
