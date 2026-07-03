@@ -23,6 +23,8 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 - Composants Twig réutilisables (`symfony/ux-twig-component`) :
   `<twig:LinkCard>` (carte de lien avec glow au survol) et `<twig:Meander>`
   (séparateur méandre grec).
+- `README.md` : présentation du projet, état d'avancement, stack et
+  commandes de dev/build, tenu à jour au fil du projet.
 
 ### Modifié
 - Retrait des références à la métaphore de la « forge » au profit du

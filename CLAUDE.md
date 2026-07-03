@@ -71,6 +71,11 @@ Polices (`@theme` → `fontFamily`) :
   `[Non publié]` (catégories Ajouté / Modifié / Corrigé, format Keep a
   Changelog). Pas nécessaire pour des micro-détails sans impact (typo dans un
   commentaire, reformulation mineure) — utiliser le jugement.
+- **Tenir le `README.md` à jour** : quand un changement modifie la stack, la
+  structure du projet, les commandes de dev/build ou l'état d'avancement
+  (cases à cocher blog/projets/admin), répercuter la mise à jour dans le
+  README. Comme pour le changelog, pas la peine pour un détail sans impact
+  sur ce que lirait un nouvel arrivant sur le projet.
 - Avant de générer de nouvelles pages/fonctionnalités (blog, projets, admin),
   proposer l'arborescence et attendre validation avant d'exécuter, comme pour
   la landing initiale.
