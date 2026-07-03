@@ -31,6 +31,9 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 - Halo teal en bas de page, en complément du halo bronze existant en haut :
   équilibre l'ambiance chaude/froide sur toute la hauteur, pas seulement au
   survol des cartes.
+- Garniture typographique lapidaire autour du titre `PetrosLabs` : petits
+  losanges bronze (interpuncts) de part et d'autre, avec filets qui
+  s'estompent vers l'extérieur à partir de `sm:`.
 
 ### Modifié
 - Retrait des références à la métaphore de la « forge » au profit du
