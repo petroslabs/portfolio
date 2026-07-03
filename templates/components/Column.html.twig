@@ -1,0 +1,29 @@
+{#
+    Colonne dorique décorative — habille les bords du viewport sur grand
+    écran pour évoquer un portique antique, en filigrane derrière le contenu.
+    Purement décorative : masquée sous lg (pas de place sur mobile/tablette),
+    non interactive.
+    Usage : <twig:Column side="left" /> / <twig:Column side="right" />
+#}
+{% props side = 'left' %}
+{% set position = side == 'left' ? 'left-6 xl:left-12' : 'right-6 xl:right-12' %}
+
+<div class="pointer-events-none fixed inset-y-0 z-0 hidden w-8 flex-col items-center text-parchment-dim opacity-[0.22] lg:flex {{ position }}"
+     aria-hidden="true">
+    {# Chapiteau : abaque + échine + collier #}
+    <svg viewBox="0 0 32 24" class="w-8 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="2" y="0" width="28" height="5" />
+        <path d="M4 5 C4 12 6 16 8 18 L24 18 C26 16 28 12 28 5" />
+        <rect x="8" y="18" width="16" height="3" />
+    </svg>
+
+    {# Fût cannelé #}
+    <div class="w-4 flex-1 bg-[repeating-linear-gradient(90deg,currentColor_0,currentColor_1.5px,transparent_1.5px,transparent_6px)]"></div>
+
+    {# Base : collier + plinthes étagées #}
+    <svg viewBox="0 0 32 22" class="w-8 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="8" y="0" width="16" height="6" />
+        <rect x="4" y="6" width="24" height="8" />
+        <rect x="0" y="14" width="32" height="8" />
+    </svg>
+</div>
