@@ -1,0 +1,46 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Projets{% endblock %}
+
+{% block body %}
+<div class="mb-6 flex items-center justify-between">
+    <h1 class="font-display text-2xl font-bold text-parchment">Projets</h1>
+    <a href="{{ path('admin_project_new') }}" class="rounded-lg bg-teal/90 px-3 py-1.5 font-mono text-xs font-medium text-charcoal hover:bg-teal">
+        + Nouveau projet
+    </a>
+</div>
+
+<div class="overflow-x-auto rounded-lg border border-parchment/10">
+    <table class="w-full text-left text-sm">
+        <thead class="bg-charcoal-800 font-mono text-xs uppercase tracking-wide text-parchment-dim">
+            <tr>
+                <th class="px-4 py-3">Position</th>
+                <th class="px-4 py-3">Nom</th>
+                <th class="px-4 py-3">Statut</th>
+                <th class="px-4 py-3"></th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-parchment/10">
+            {% for project in projects %}
+                <tr>
+                    <td class="px-4 py-3 text-parchment-dim">{{ project.position }}</td>
+                    <td class="px-4 py-3 text-parchment">{{ project.name }}</td>
+                    <td class="px-4 py-3 text-parchment-dim">{{ ('status.' ~ project.status)|trans }}</td>
+                    <td class="px-4 py-3 text-right">
+                        <a href="{{ path('admin_project_edit', {id: project.id}) }}" class="mr-3 text-teal hover:underline">Éditer</a>
+                        <form action="{{ path('admin_project_delete', {id: project.id}) }}" method="post" class="inline"
+                              onsubmit="return confirm('Supprimer ce projet ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-project-' ~ project.id) }}">
+                            <button type="submit" class="text-bronze-bright hover:underline">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4" class="px-4 py-6 text-center text-parchment-dim">Aucun projet pour le moment.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
