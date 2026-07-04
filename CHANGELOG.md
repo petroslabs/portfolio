@@ -82,6 +82,8 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
   - Lien "Blog" du hub : pointe désormais vers `/blog` au lieu de `#`.
   - Premier article publié : "Bienvenue au laboratoire" (billet d'annonce,
     à remplacer/compléter par du vrai contenu quand tu le souhaites).
+- Licence MIT (`LICENSE`), projet désormais open source — `composer.json`
+  mis à jour en conséquence (`license: "MIT"`, à la place de `proprietary`).
 
 ### Modifié
 - Retrait des références à la métaphore de la « forge » au profit du
