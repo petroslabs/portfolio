@@ -62,6 +62,15 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
   - Les traductions anglaises du contenu éditorial (bio, tagline, résumé de
     projet, items de l'établi) sont une première version à ajuster par
     Pierre pour retrouver sa voix.
+- SEO : `robots.txt`, sitemap dynamique (`/sitemap.xml`, `SitemapController`),
+  URL canonique par page, image `og:image` (1200×630), meta Open Graph
+  complètes (`og:url`, `og:locale`, dimensions d'image) et Twitter Card
+  (`summary_large_image`), JSON-LD `Person` sur la landing (nom, URL,
+  `sameAs` vers les liens externes du hub).
+  - Limite assumée : l'i18n cookie/sans-préfixe ne permet pas un vrai
+    hreflang — seule la version FR (par défaut) est indexée par les
+    moteurs de recherche ; l'EN reste une option de confort pour les
+    visiteurs humains.
 
 ### Modifié
 - Retrait des références à la métaphore de la « forge » au profit du
@@ -72,6 +81,10 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 - Lien "Projets" du hub : pointe désormais vers `/projects` au lieu de `#`.
 - Premier projet de la vitrine remplacé par ce site lui-même (PetrosLabs),
   avec une vraie capture d'écran à la place du placeholder.
+- Switcher de langue : passé en colonne verticale (FR / EN empilés), collé
+  au bord réel du viewport, pour ne plus chevaucher les colonnes décoratives
+  à partir de `lg:`.
+- Image du projet PetrosLabs recompressée en WebP (2,6 Mo → 19 Ko).
 
 ### Corrigé
 - Lien Email du hub : utilisation du schéma `mailto:` (le lien ouvrait une

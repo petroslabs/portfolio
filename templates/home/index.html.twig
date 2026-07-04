@@ -2,6 +2,24 @@
 
 {% block title %}{{ 'home.meta_title'|trans }}{% endblock %}
 
+{% block schema %}
+    {% set sameAs = [] %}
+    {% for link in links %}
+        {% if link.external %}
+            {% set sameAs = sameAs|merge([link.url]) %}
+        {% endif %}
+    {% endfor %}
+    <script type="application/ld+json">
+    {{ {
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        'name': profile.name,
+        'url': absolute_url(path('app_home')),
+        'sameAs': sameAs,
+    }|json_encode(constant('JSON_UNESCAPED_SLASHES'))|raw }}
+    </script>
+{% endblock %}
+
 {% block body %}
 <div class="mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 pb-10 sm:px-6">
 
