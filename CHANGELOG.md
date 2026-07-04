@@ -44,6 +44,24 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
   sera développé). Nouveau composant `<twig:ProjectCard>`.
 - Composant `<twig:SiteFooter>` : pied de page factorisé, réutilisé par la
   landing et la page Projets.
+- Page "L'établi" (`/uses`) : outils, stack et matériel utilisés au quotidien,
+  par catégories. `UsesController` dédié, contenu piloté par
+  `config/uses.yaml` (même logique que `hub.yaml`/`projects.yaml`).
+- Internationalisation FR/EN, sans préfixe d'URL : la langue est mémorisée
+  dans un cookie (1 an) et se change via un switcher discret en haut de
+  chaque page.
+  - `LocaleSubscriber` (lit le cookie à chaque requête) et
+    `LocaleController` (route `/lang/{locale}`, protégée contre
+    l'open-redirect sur le `Referer`).
+  - Filtre Twig `\|localized` (`LocalizedContentExtension`) : résout les
+    champs de contenu bilingues `{ fr, en }` définis dans `hub.yaml`,
+    `projects.yaml` et `uses.yaml` (bio, tagline, résumés, labels…).
+  - Libellés d'interface (menus, badges de statut, boutons Code/Démo,
+    footer, titres/meta de page) traduits via
+    `translations/messages.{fr,en}.yaml`.
+  - Les traductions anglaises du contenu éditorial (bio, tagline, résumé de
+    projet, items de l'établi) sont une première version à ajuster par
+    Pierre pour retrouver sa voix.
 
 ### Modifié
 - Retrait des références à la métaphore de la « forge » au profit du

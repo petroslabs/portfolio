@@ -1,0 +1,28 @@
+nav:
+    atelier: "l'atelier"
+
+home:
+    meta_title: 'PetrosLabs — le laboratoire de Pierre'
+    meta_description: "PetrosLabs — laboratoire où la discipline spartiate rencontre le code d'aujourd'hui."
+
+projects:
+    title: 'Projets'
+    subtitle: "ce qui s'est construit dans l'atelier"
+    meta_title: 'Projets — PetrosLabs'
+    meta_description: "La vitrine des projets de PetrosLabs — ce qui s'est construit dans l'atelier."
+    code: 'Code'
+    demo: 'Démo'
+
+uses:
+    title: "L'établi"
+    subtitle: 'les outils du laboratoire'
+    meta_title: "L'établi — PetrosLabs"
+    meta_description: 'Les outils, la stack et le matériel utilisés au quotidien chez PetrosLabs.'
+
+status:
+    in_progress: 'En cours'
+    done: 'Terminé'
+    archived: 'Archivé'
+
+footer:
+    tagline: 'quelque part entre Sparte et le terminal'

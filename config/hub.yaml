@@ -5,26 +5,35 @@
 # données quand l'espace Admin arrivera. Injecté dans HomeController via un bind
 # défini dans config/services.yaml.
 parameters:
-    # Identité / entête du hub
+    # Identité / entête du hub.
+    # tagline / bio : champs bilingues { fr, en } — l'anglais est une première
+    # traduction à ajuster par Pierre pour bien retrouver sa voix.
     app.profile:
         name: 'PetrosLabs'
-        # Tagline courte affichée en monospace (« terminal »). À remplacer.
-        tagline: 'ancient discipline, modern code'
-        # Bio courte (2-3 lignes). Placeholder à remplacer.
-        bio: >-
-            Développeur. Ici, la rigueur spartiate rencontre le code
-            d'aujourd'hui, entre colonnes de marbre et lueurs de terminal.
-            Bienvenue au laboratoire.
+        tagline:
+            fr: 'discipline antique, code moderne'
+            en: 'ancient discipline, modern code'
+        bio:
+            fr: >-
+                Ici, la rigueur spartiate rencontre le code d'aujourd'hui,
+                entre colonnes de marbre et lueurs de terminal.
+                Bienvenue au laboratoire.
+            en: >-
+                Here, Spartan discipline meets modern code, between marble
+                columns and the glow of a terminal. Welcome to the lab.
         # Chemins AssetMapper (relatifs à assets/)
         banner: 'images/banner.png'
         logo: 'images/logo.png'
 
     # Grille de liens du hub.
     # icon : clé mappée dans le composant LinkCard (github, mail, blog, projects,
-    #        linkedin, link). accent : 'teal' ou 'bronze' (lueur au survol).
+    #        uses, linkedin, link). accent : 'teal' ou 'bronze' (lueur au survol).
+    # label / description : chaîne simple (identique dans les deux langues,
+    # ex. noms propres) ou objet { fr, en } quand le texte diffère.
     app.hub_links:
-        - { label: 'GitHub',   url: 'https://github.com/petroslabs', icon: 'github',   accent: 'teal',   external: true,  description: 'Le code, brut' }
-        - { label: 'Email',    url: 'mailto:petroslabs@proton.me', icon: 'mail', accent: 'bronze', external: false, description: 'Écris-moi' }
-        - { label: 'Blog',     url: '#', icon: 'blog',     accent: 'teal',   external: false, description: 'Notes du laboratoire — bientôt' }
-        - { label: 'Projets',  url: '/projects', icon: 'projects', accent: 'bronze', external: false, description: 'Ce que je construis' }
-        - { label: 'LinkedIn', url: '#', icon: 'linkedin', accent: 'teal',   external: true,  description: 'Le parcours' }
+        - { label: 'GitHub',   url: 'https://github.com/petroslabs', icon: 'github',   accent: 'teal',   external: true,  description: { fr: 'Le code, brut', en: 'The raw code' } }
+        - { label: 'Email',    url: 'mailto:petroslabs@proton.me', icon: 'mail', accent: 'bronze', external: false, description: { fr: 'Écris-moi', en: 'Write to me' } }
+        - { label: 'Blog',     url: '#', icon: 'blog',     accent: 'teal',   external: false, description: { fr: 'Notes du laboratoire — bientôt', en: 'Lab notes — coming soon' } }
+        - { label: { fr: 'Projets', en: 'Projects' }, url: '/projects', icon: 'projects', accent: 'bronze', external: false, description: { fr: 'Ce que je construis', en: 'What I build' } }
+        - { label: { fr: "L'établi", en: 'The workbench' }, url: '/uses', icon: 'uses', accent: 'teal', external: false, description: { fr: 'Les outils du labo', en: 'The tools of the lab' } }
+        - { label: 'LinkedIn', url: '#', icon: 'linkedin', accent: 'bronze',   external: true,  description: { fr: 'Le parcours', en: 'My background' } }
