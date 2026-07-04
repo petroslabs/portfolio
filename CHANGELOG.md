@@ -115,6 +115,10 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
   admin activée.
 
 ### Modifié
+- Retrait du champ bannière du profil (`App\Entity\Profile`) : essayé avec
+  une vraie image, pas concluant côté direction artistique — retiré de
+  l'entité, du formulaire admin et de la base (migration de suppression de
+  colonne), plutôt que laissé désactivé/commenté.
 - Retrait des références à la métaphore de la « forge » au profit du
   vocabulaire « labs / laboratoire », plus proche de l'identité PetrosLabs.
 - Retrait du lien vers X (réseau social).
