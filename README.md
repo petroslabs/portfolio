@@ -126,3 +126,7 @@ public/robots.txt             # Autorise l'indexation, référence le sitemap
 
 - [`CLAUDE.md`](CLAUDE.md) — contexte projet, direction artistique et attentes de collaboration
 - [`CHANGELOG.md`](CHANGELOG.md) — historique des changements
+
+## Licence
+
+[MIT](LICENSE)
