@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'uses.meta_title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'uses.meta_description'|trans }}{% endblock %}
+
+{% block body %}
+<div class="mx-auto flex min-h-screen w-full max-w-3xl flex-col px-4 pb-10 sm:px-6">
+
+    <header class="mt-6 animate-rise sm:mt-10">
+        <a href="{{ path('app_home') }}"
+           class="inline-flex items-center gap-1.5 font-mono text-xs text-parchment-dim transition-colors hover:text-teal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m15 18-6-6 6-6" />
+            </svg>
+            petroslabs
+        </a>
+
+        <h1 class="mt-6 text-center font-display text-3xl font-bold tracking-wide text-parchment sm:text-4xl">
+            {{ 'uses.title'|trans }}
+        </h1>
+        <p class="mt-3 text-center font-mono text-xs uppercase tracking-[0.3em] text-parchment-dim">
+            <span class="text-teal">//</span> {{ 'uses.subtitle'|trans }}
+        </p>
+    </header>
+
+    <twig:Meander class="my-10 animate-rise sm:my-12" />
+
+    <main class="flex flex-col gap-8">
+        {% for group in uses %}
+            <section class="animate-rise" style="animation-delay: {{ 80 + loop.index0 * 60 }}ms">
+                <h2 class="mb-3 font-mono text-xs uppercase tracking-[0.3em] text-bronze-bright">
+                    {{ group.category|localized }}
+                </h2>
+                <dl class="divide-y divide-parchment/10 rounded-xl border border-parchment/10 bg-charcoal-800/60">
+                    {% for item in group.items %}
+                        <div class="flex flex-col gap-1 px-5 py-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+                            <dt class="font-display text-sm font-semibold tracking-wide text-parchment">{{ item.name|localized }}</dt>
+                            <dd class="font-mono text-sm text-parchment-dim sm:text-right">{{ item.value|localized }}</dd>
+                        </div>
+                    {% endfor %}
+                </dl>
+            </section>
+        {% endfor %}
+    </main>
+
+    <twig:Meander class="my-10 sm:my-12" />
+
+    <twig:SiteFooter />
+</div>
+{% endblock %}

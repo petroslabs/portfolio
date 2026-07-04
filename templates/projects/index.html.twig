@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Projets — PetrosLabs{% endblock %}
-{% block meta_description %}La vitrine des projets de PetrosLabs — ce qui s'est construit dans l'atelier.{% endblock %}
+{% block title %}{{ 'projects.meta_title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'projects.meta_description'|trans }}{% endblock %}
 
 {% block body %}
 <div class="mx-auto flex min-h-screen w-full max-w-4xl flex-col px-4 pb-10 sm:px-6">
@@ -16,10 +16,10 @@
         </a>
 
         <h1 class="mt-6 text-center font-display text-3xl font-bold tracking-wide text-parchment sm:text-4xl">
-            Projets
+            {{ 'projects.title'|trans }}
         </h1>
         <p class="mt-3 text-center font-mono text-xs uppercase tracking-[0.3em] text-parchment-dim">
-            <span class="text-teal">//</span> ce qui s'est construit dans l'atelier
+            <span class="text-teal">//</span> {{ 'projects.subtitle'|trans }}
         </p>
     </header>
 
@@ -30,8 +30,8 @@
             {% for project in projects %}
                 <li class="animate-rise" style="animation-delay: {{ 80 + loop.index0 * 60 }}ms">
                     <twig:ProjectCard
-                        name="{{ project.name }}"
-                        summary="{{ project.summary }}"
+                        :name="project.name"
+                        :summary="project.summary"
                         image="{{ project.image }}"
                         :stack="project.stack"
                         status="{{ project.status }}"

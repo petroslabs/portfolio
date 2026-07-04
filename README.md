@@ -11,6 +11,8 @@ lueurs teal/bronze nocturnes). Détails complets dans [`CLAUDE.md`](CLAUDE.md).
 
 - ✅ Landing page (`/`) — hub central avec bannière, logo, bio et grille de liens
 - ✅ Projets (`/projects`) — vitrine des projets
+- ✅ L'établi (`/uses`) — outils, stack et matériel au quotidien
+- ✅ Internationalisation FR/EN (sans préfixe d'URL, cookie de préférence)
 - ⬜ Blog (`/blog`)
 - ⬜ Espace admin (`Admin\`)
 
@@ -59,14 +61,29 @@ php bin/console tailwind:build --minify
 ```
 config/hub.yaml              # Contenu de la landing (profil + liens du hub)
 config/projects.yaml         # Contenu de la page Projets
-src/Controller/               # HomeController, ProjectController (puis Blog/Admin à venir)
+config/uses.yaml             # Contenu de "L'établi"
+src/Controller/               # HomeController, ProjectController, UsesController, LocaleController
+src/EventListener/            # LocaleSubscriber (langue depuis le cookie)
+src/Twig/                     # LocalizedContentExtension (filtre |localized)
+translations/                 # messages.fr.yaml / messages.en.yaml (libellés d'interface)
 templates/
-├── base.html.twig            # Layout commun
+├── base.html.twig            # Layout commun + switcher de langue
 ├── home/                     # Landing page
 ├── projects/                 # Page Projets
+├── uses/                     # Page L'établi
 └── components/                # Composants Twig réutilisables (LinkCard, ProjectCard, Meander, SiteFooter…)
 assets/styles/app.css         # Thème Tailwind (@theme : palette, polices, animations)
 ```
+
+## Internationalisation
+
+- FR (défaut) / EN, sans préfixe d'URL — la langue est mémorisée dans un
+  cookie et se change via le switcher **FR / EN** en haut de chaque page.
+- Contenu éditorial bilingue (bio, tagline, résumés…) : champs
+  `{ fr: '...', en: '...' }` dans `config/*.yaml`, résolus par le filtre Twig
+  `|localized`.
+- Libellés d'interface (menus, badges, boutons, footer) : clés de traduction
+  dans `translations/messages.{fr,en}.yaml`, via `|trans`.
 
 ## Documentation interne
 

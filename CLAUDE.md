@@ -5,10 +5,11 @@ progressivement un blog, des projets et un espace admin.
 
 ## État actuel
 
-La **landing page (`/`)** et la **page Projets (`/projects`)** sont
-implémentées. Le blog (`/blog`) et l'admin (`Admin\`) ne sont **pas encore
-développés** — le code est structuré pour les accueillir sans refactoring,
-mais ne pas les générer sans demande explicite.
+La **landing page (`/`)**, la **page Projets (`/projects`)** et **L'établi
+(`/uses`)** sont implémentées, avec **internationalisation FR/EN**. Le blog
+(`/blog`) et l'admin (`Admin\`) ne sont **pas encore développés** — le code
+est structuré pour les accueillir sans refactoring, mais ne pas les générer
+sans demande explicite.
 
 ## Direction artistique — à respecter impérativement
 
@@ -58,16 +59,39 @@ Polices (`@theme` → `fontFamily`) :
   cohabiter avec de futurs `BlogController`, `Admin\…` sans modification.
 - `src/Controller/ProjectController.php` : route `/projects`, même pattern
   d'injection que `HomeController`, contenu depuis `config/projects.yaml`.
-- `config/hub.yaml` / `config/projects.yaml` : contenu **en configuration
-  YAML**, pas en base de données. Ce choix est volontaire et temporaire — le
-  jour où l'espace admin est développé, ce contenu bascule en base (les
-  projets y seront alors ajoutables directement) ; ne pas anticiper cette
-  migration avant qu'elle soit demandée.
+- `src/Controller/UsesController.php` : route `/uses`, contenu depuis
+  `config/uses.yaml`.
+- `config/hub.yaml` / `config/projects.yaml` / `config/uses.yaml` : contenu
+  **en configuration YAML**, pas en base de données. Ce choix est volontaire
+  et temporaire — le jour où l'espace admin est développé, ce contenu
+  bascule en base (les projets y seront alors ajoutables directement) ; ne
+  pas anticiper cette migration avant qu'elle soit demandée.
 - `templates/base.html.twig` : layout commun (polices, metas, fond, colonnes
-  décoratives).
+  décoratives, switcher de langue).
 - `templates/home/index.html.twig` : la landing, étend `base.html.twig`.
 - `templates/projects/index.html.twig` : la page Projets, étend `base.html.twig`.
+- `templates/uses/index.html.twig` : L'établi, étend `base.html.twig`.
 - `templates/components/` : composants Twig réutilisables.
+
+## Internationalisation (FR/EN)
+
+- **Pas de préfixe d'URL** : mêmes routes dans les deux langues, la
+  préférence est mémorisée dans un cookie (`LocaleController`,
+  route `/lang/{locale}`) et lue à chaque requête par `LocaleSubscriber`
+  (`src/EventListener/`).
+- **Contenu éditorial** (bio, tagline, résumés de projets, items de
+  l'établi…) : champs `{ fr: '...', en: '...' }` directement dans les YAML
+  de contenu (`hub.yaml`, `projects.yaml`, `uses.yaml`), résolus dans les
+  templates par le filtre Twig `\|localized`
+  (`src/Twig/LocalizedContentExtension.php`). Un champ resté en simple
+  chaîne (nom propre, valeur technique) est renvoyé tel quel par ce filtre —
+  ne pas forcer un `{ fr, en }` quand la valeur ne change pas de langue.
+- **Libellés d'interface** (menus, badges de statut, boutons, footer,
+  titres/meta de page) : clés de traduction dans
+  `translations/messages.fr.yaml` / `messages.en.yaml`, via le filtre
+  `\|trans` — jamais dans les YAML de contenu.
+- Quand un nouveau champ éditorial est ajouté, l'ajouter en bilingue dès le
+  départ (même schéma `{ fr, en }`) plutôt que de le rattraper après coup.
 
 ## Attentes de collaboration
 

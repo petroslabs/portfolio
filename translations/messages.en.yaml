@@ -1,0 +1,28 @@
+nav:
+    atelier: 'the workshop'
+
+home:
+    meta_title: 'PetrosLabs — the lab of Pierre'
+    meta_description: 'PetrosLabs — a lab where Spartan discipline meets modern code.'
+
+projects:
+    title: 'Projects'
+    subtitle: 'what has been built in the workshop'
+    meta_title: 'Projects — PetrosLabs'
+    meta_description: 'The showcase of PetrosLabs projects — what has been built in the workshop.'
+    code: 'Code'
+    demo: 'Demo'
+
+uses:
+    title: 'The Workbench'
+    subtitle: 'the tools of the lab'
+    meta_title: 'The Workbench — PetrosLabs'
+    meta_description: 'The tools, stack, and hardware used daily at PetrosLabs.'
+
+status:
+    in_progress: 'In progress'
+    done: 'Done'
+    archived: 'Archived'
+
+footer:
+    tagline: 'somewhere between Sparta and the terminal'

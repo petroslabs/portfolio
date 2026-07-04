@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+#
+# Contenu de "L'établi" (/uses) : les outils, la stack et le matériel
+# utilisés au quotidien. Même logique que hub.yaml / projects.yaml.
+parameters:
+    app.uses:
+        - category: { fr: 'Éditeur & terminal', en: 'Editor & terminal' }
+          items:
+              - name: { fr: 'Éditeur', en: 'Editor' }
+                value: { fr: 'Placeholder — à remplacer (ex. Neovim, VS Code…)', en: 'Placeholder — fill in (e.g. Neovim, VS Code…)' }
+              - name: { fr: 'Terminal', en: 'Terminal' }
+                value: { fr: 'Placeholder', en: 'Placeholder' }
+              - name: { fr: 'Shell', en: 'Shell' }
+                value: { fr: 'Placeholder (zsh, fish…)', en: 'Placeholder (zsh, fish…)' }
+        - category: { fr: 'Stack de prédilection', en: 'Preferred stack' }
+          items:
+              - name: { fr: 'Backend', en: 'Backend' }
+                value: 'Symfony, PHP'
+              - name: { fr: 'Frontend', en: 'Frontend' }
+                value: 'Tailwind CSS, Stimulus'
+              - name: { fr: 'Base de données', en: 'Database' }
+                value: 'PostgreSQL'
+        - category: { fr: 'Matériel', en: 'Hardware' }
+          items:
+              - name: { fr: 'Machine', en: 'Machine' }
+                value: { fr: 'Placeholder', en: 'Placeholder' }
+              - name: { fr: 'Clavier', en: 'Keyboard' }
+                value: { fr: 'Placeholder', en: 'Placeholder' }
+        - category: { fr: 'Hébergement & infra', en: 'Hosting & infra' }
+          items:
+              - name: { fr: 'Serveur', en: 'Server' }
+                value: 'FrankenPHP'
+              - name: { fr: 'CI/CD', en: 'CI/CD' }
+                value: { fr: 'Placeholder', en: 'Placeholder' }

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="{{ app.request.locale }}" class="scroll-smooth">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{% block title %}PetrosLabs — le laboratoire de Pierre{% endblock %}</title>
-        <meta name="description" content="{% block meta_description %}PetrosLabs — laboratoire où la discipline spartiate rencontre le code d'aujourd'hui.{% endblock %}">
+        <title>{% block title %}{{ 'home.meta_title'|trans }}{% endblock %}</title>
+        <meta name="description" content="{% block meta_description %}{{ 'home.meta_description'|trans }}{% endblock %}">
 
         {# Open Graph / partage social #}
         <meta property="og:title" content="{{ block('title') }}">
@@ -35,6 +35,20 @@
     <body class="min-h-screen bg-charcoal font-sans text-parchment antialiased selection:bg-teal/30 selection:text-parchment">
         <twig:Column side="left" />
         <twig:Column side="right" />
+
+        {# Switcher de langue, discret, présent sur toutes les pages.
+           En colonne (pas en ligne) et collé au bord réel (right-2/right-3) :
+           <twig:Column side="right"> démarre à 24px du bord (right-6) — en
+           restant plus près du bord et plus étroit, on ne la chevauche plus,
+           à aucun breakpoint #}
+        <div class="fixed right-2 top-3 z-10 flex flex-col items-center gap-1 font-mono text-[0.65rem] uppercase tracking-wide sm:right-3 sm:top-5">
+            <a href="{{ path('app_switch_locale', {locale: 'fr'}) }}"
+               class="transition-colors {{ app.request.locale == 'fr' ? 'text-teal' : 'text-parchment-dim hover:text-parchment' }}">FR</a>
+            <span class="text-parchment-dim/30">·</span>
+            <a href="{{ path('app_switch_locale', {locale: 'en'}) }}"
+               class="transition-colors {{ app.request.locale == 'en' ? 'text-teal' : 'text-parchment-dim hover:text-parchment' }}">EN</a>
+        </div>
+
         {% block body %}{% endblock %}
     </body>
 </html>
