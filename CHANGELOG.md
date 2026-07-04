@@ -84,6 +84,16 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
     à remplacer/compléter par du vrai contenu quand tu le souhaites).
 - Licence MIT (`LICENSE`), projet désormais open source — `composer.json`
   mis à jour en conséquence (`license: "MIT"`, à la place de `proprietary`).
+- Intégration à l'infra Docker partagée `symfony_env` (Traefik + PostgreSQL +
+  Redis + Mailpit) : `Dockerfile` (image `dunglas/frankenphp:php8.4` + extension
+  `pdo_pgsql`), `compose.yaml` (service `app`, réseau externe `symfony_env`,
+  labels Traefik pour `petroslabs.localhost`). Remplace le scaffold par
+  défaut de `doctrine/doctrine-bundle` (PostgreSQL/Mailpit isolés dans
+  `compose.override.yaml`, supprimé).
+- `Makefile` : commandes de dev (`serve`, `tailwind-watch`/`tailwind-build`,
+  `lint`, `test`, `cache-clear`) et de gestion Docker (`build`, `up`, `down`,
+  `logs`, `sh`, `console`, `traefik-restart`, `db-create`/`db-drop`) — `make
+  help` liste tout.
 
 ### Modifié
 - Retrait des références à la métaphore de la « forge » au profit du
