@@ -14,7 +14,7 @@ lueurs teal/bronze nocturnes). Détails complets dans [`CLAUDE.md`](CLAUDE.md).
 - ✅ L'établi (`/uses`) — outils, stack et matériel au quotidien
 - ✅ Internationalisation FR/EN (sans préfixe d'URL, cookie de préférence)
 - ✅ SEO de base (robots.txt, sitemap, canonical, og:image, JSON-LD)
-- ⬜ Blog (`/blog`)
+- ✅ Blog (`/blog`) — articles en Markdown
 - ⬜ Espace admin (`Admin\`)
 
 Voir [`CHANGELOG.md`](CHANGELOG.md) pour le détail des évolutions.
@@ -67,7 +67,9 @@ php bin/console tailwind:build --minify
 config/hub.yaml              # Contenu de la landing (profil + liens du hub)
 config/projects.yaml         # Contenu de la page Projets
 config/uses.yaml             # Contenu de "L'établi"
-src/Controller/               # HomeController, ProjectController, UsesController, LocaleController, SitemapController
+content/blog/                # Articles de blog en Markdown ({slug}.fr.md / {slug}.en.md)
+src/Blog/                     # BlogPost (DTO), BlogPostRepository (lecture/parsing des articles)
+src/Controller/               # HomeController, ProjectController, UsesController, BlogController, LocaleController, SitemapController
 src/EventListener/            # LocaleSubscriber (langue depuis le cookie)
 src/Twig/                     # LocalizedContentExtension (filtre |localized)
 translations/                 # messages.fr.yaml / messages.en.yaml (libellés d'interface)
@@ -76,9 +78,10 @@ templates/
 ├── home/                     # Landing page
 ├── projects/                 # Page Projets
 ├── uses/                     # Page L'établi
+├── blog/                     # Liste des articles + page article
 ├── sitemap/                  # Template XML du sitemap
-└── components/                # Composants Twig réutilisables (LinkCard, ProjectCard, Meander, SiteFooter…)
-assets/styles/app.css         # Thème Tailwind (@theme : palette, polices, animations)
+└── components/                # Composants Twig réutilisables (LinkCard, ProjectCard, PostCard, Meander, SiteFooter…)
+assets/styles/app.css         # Thème Tailwind (@theme : palette, polices, animations) + typographie .prose-blog
 public/robots.txt             # Autorise l'indexation, référence le sitemap
 ```
 
@@ -92,6 +95,22 @@ public/robots.txt             # Autorise l'indexation, référence le sitemap
 - **Limite assumée** : sans préfixe d'URL, les moteurs de recherche
   n'indexent que la version FR (par défaut) — l'EN est une option de
   confort pour les visiteurs, pas un contenu séparé référencé.
+
+## Blog
+
+- Articles en fichiers Markdown dans `content/blog/` — un fichier par
+  article et par langue (`{slug}.fr.md` / `{slug}.en.md`), avec un
+  frontmatter YAML pour les métadonnées (`title`, `summary`, `date`, `cover`
+  optionnel).
+- Pas de base de données pour l'instant (même logique que `hub.yaml` /
+  `projects.yaml` / `uses.yaml`) : `App\Blog\BlogPostRepository` scanne le
+  dossier et convertit le corps Markdown en HTML via `league/commonmark`.
+- Si la traduction d'une langue manque pour un article, la version FR sert
+  de repli (même logique que le filtre `|localized`).
+- Pour ajouter un article : créer `content/blog/mon-slug.fr.md` et
+  `content/blog/mon-slug.en.md`, chacun avec son frontmatter — aucune autre
+  étape nécessaire, il apparaît automatiquement sur `/blog` et dans le
+  sitemap.
 
 ## Internationalisation
 

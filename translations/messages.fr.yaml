@@ -19,6 +19,15 @@ uses:
     meta_title: "L'établi — PetrosLabs"
     meta_description: 'Les outils, la stack et le matériel utilisés au quotidien chez PetrosLabs.'
 
+blog:
+    title: 'Notes du laboratoire'
+    subtitle: 'ce qui se pense entre deux commits'
+    meta_title: 'Blog — PetrosLabs'
+    meta_description: 'Notes du laboratoire PetrosLabs — retours d''expérience et choix techniques.'
+    back: 'le blog'
+    read_more: 'Lire l''article'
+    empty: 'Aucun article pour le moment.'
+
 status:
     in_progress: 'En cours'
     done: 'Terminé'

@@ -71,6 +71,17 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
     hreflang — seule la version FR (par défaut) est indexée par les
     moteurs de recherche ; l'EN reste une option de confort pour les
     visiteurs humains.
+- Blog (`/blog`, `/blog/{slug}`) : articles en fichiers Markdown
+  (`content/blog/{slug}.fr.md` / `.en.md`, frontmatter YAML pour les
+  métadonnées), même logique que `hub.yaml`/`projects.yaml`/`uses.yaml` —
+  pas de base de données pour l'instant. `BlogController` dédié,
+  `App\Blog\BlogPostRepository` (scan + parsing, converti en HTML via
+  `league/commonmark`), fallback FR si une traduction manque.
+  - Composant `<twig:PostCard>` pour la liste des articles.
+  - JSON-LD `BlogPosting` sur chaque article, ajout au sitemap dynamique.
+  - Lien "Blog" du hub : pointe désormais vers `/blog` au lieu de `#`.
+  - Premier article publié : "Bienvenue au laboratoire" (billet d'annonce,
+    à remplacer/compléter par du vrai contenu quand tu le souhaites).
 
 ### Modifié
 - Retrait des références à la métaphore de la « forge » au profit du
