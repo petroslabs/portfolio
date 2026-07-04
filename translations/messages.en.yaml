@@ -19,6 +19,15 @@ uses:
     meta_title: 'The Workbench — PetrosLabs'
     meta_description: 'The tools, stack, and hardware used daily at PetrosLabs.'
 
+blog:
+    title: 'Lab notes'
+    subtitle: 'what gets thought between two commits'
+    meta_title: 'Blog — PetrosLabs'
+    meta_description: 'PetrosLabs lab notes — experience reports and technical choices.'
+    back: 'the blog'
+    read_more: 'Read the article'
+    empty: 'No articles yet.'
+
 status:
     in_progress: 'In progress'
     done: 'Done'

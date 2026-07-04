@@ -5,11 +5,11 @@ progressivement un blog, des projets et un espace admin.
 
 ## État actuel
 
-La **landing page (`/`)**, la **page Projets (`/projects`)** et **L'établi
-(`/uses`)** sont implémentées, avec **internationalisation FR/EN**. Le blog
-(`/blog`) et l'admin (`Admin\`) ne sont **pas encore développés** — le code
-est structuré pour les accueillir sans refactoring, mais ne pas les générer
-sans demande explicite.
+La **landing page (`/`)**, la **page Projets (`/projects`)**, **L'établi
+(`/uses`)** et le **blog (`/blog`)** sont implémentés, avec
+**internationalisation FR/EN**. L'admin (`Admin\`) n'est **pas encore
+développé** — le code est structuré pour l'accueillir sans refactoring, mais
+ne pas le générer sans demande explicite.
 
 ## Direction artistique — à respecter impérativement
 
@@ -45,10 +45,12 @@ Polices (`@theme` → `fontFamily`) :
   `tailwind.config.js`. Build : `php bin/console tailwind:build --watch` (dev)
   / `--minify` (prod).
 - **symfony/ux-twig-component** pour factoriser les motifs répétés en
-  composants Twig (`<twig:LinkCard>`, `<twig:ProjectCard>`, `<twig:Meander>`,
-  `<twig:Column>`, `<twig:SiteFooter>` dans `templates/components/`) —
-  préférer cette approche à la duplication de longues chaînes de classes ou
-  à de simples `{% include %}`.
+  composants Twig (`<twig:LinkCard>`, `<twig:ProjectCard>`, `<twig:PostCard>`,
+  `<twig:Meander>`, `<twig:Column>`, `<twig:SiteFooter>` dans
+  `templates/components/`) — préférer cette approche à la duplication de
+  longues chaînes de classes ou à de simples `{% include %}`.
+- **league/commonmark** pour le rendu des articles de blog (Markdown → HTML,
+  pur PHP, pas de build JS).
 - Éviter le CSS vanilla hors nécessité stricte (keyframes, texture de fond) :
   privilégier les utilitaires Tailwind.
 
@@ -66,11 +68,21 @@ Polices (`@theme` → `fontFamily`) :
   et temporaire — le jour où l'espace admin est développé, ce contenu
   bascule en base (les projets y seront alors ajoutables directement) ; ne
   pas anticiper cette migration avant qu'elle soit demandée.
+- `src/Controller/BlogController.php` : routes `/blog` (liste) et
+  `/blog/{slug}` (article). Contenu via `App\Blog\BlogPostRepository`, qui
+  scanne `content/blog/{slug}.fr.md` / `.en.md` (frontmatter YAML +
+  Markdown), pas de base de données — même logique temporaire que les YAML
+  ci-dessus. Fallback FR si une traduction manque, comme `|localized`.
 - `templates/base.html.twig` : layout commun (polices, metas, fond, colonnes
   décoratives, switcher de langue).
 - `templates/home/index.html.twig` : la landing, étend `base.html.twig`.
 - `templates/projects/index.html.twig` : la page Projets, étend `base.html.twig`.
 - `templates/uses/index.html.twig` : L'établi, étend `base.html.twig`.
+- `templates/blog/` : liste des articles (`index.html.twig`) et page article
+  (`show.html.twig`), étendent `base.html.twig`. Le corps HTML d'un article
+  est stylé via `.prose-blog` dans `assets/styles/app.css` (CSS vanilla
+  assumé ici : pas de classes utilitaires possibles sur du HTML généré côté
+  serveur depuis du Markdown).
 - `templates/components/` : composants Twig réutilisables.
 
 ## Internationalisation (FR/EN)
@@ -96,10 +108,11 @@ Polices (`@theme` → `fontFamily`) :
 ## SEO
 
 - `public/robots.txt` (statique) + `/sitemap.xml` (`SitemapController`,
-  généré depuis les routes — à étendre avec les futures URLs du blog).
+  généré depuis les routes statiques et les articles de blog).
 - `templates/base.html.twig` : URL canonique, `og:image`/Open Graph/Twitter
   Card complets, bloc Twig `{% block schema %}` pour le JSON-LD (rempli par
-  `home/index.html.twig` avec un schema `Person`).
+  `home/index.html.twig` avec un schema `Person`, et par
+  `blog/show.html.twig` avec un schema `BlogPosting` par article).
 - **Limite assumée et ne pas tenter de la contourner sans validation** :
   l'i18n cookie/sans-préfixe empêche un hreflang correct — seule la version
   FR (par défaut, sans cookie) est indexée par les moteurs de recherche.

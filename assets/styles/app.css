@@ -94,3 +94,68 @@
         background-color: var(--color-teal);
     }
 }
+
+@layer components {
+    /* Typographie du corps d'un article de blog (HTML généré depuis
+       Markdown) : pas de classes utilitaires possibles sur ce contenu, d'où
+       ce petit bloc CSS dédié plutôt qu'un plugin Tailwind. */
+    .prose-blog :where(h2, h3) {
+        margin-top: 2em;
+        margin-bottom: 0.6em;
+        font-family: var(--font-display);
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: var(--color-parchment);
+    }
+
+    .prose-blog h2 { font-size: 1.5rem; }
+    .prose-blog h3 { font-size: 1.2rem; }
+
+    .prose-blog p { margin: 1.1em 0; }
+
+    .prose-blog a {
+        color: var(--color-teal);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    .prose-blog a:hover {
+        color: var(--color-teal-deep);
+    }
+
+    .prose-blog ul, .prose-blog ol {
+        margin: 1.1em 0;
+        padding-left: 1.4em;
+    }
+
+    .prose-blog ul { list-style: disc; }
+    .prose-blog ol { list-style: decimal; }
+    .prose-blog li + li { margin-top: 0.4em; }
+
+    .prose-blog blockquote {
+        border-left: 2px solid var(--color-bronze);
+        padding-left: 1em;
+        font-style: italic;
+        color: var(--color-parchment-dim);
+    }
+
+    .prose-blog code {
+        font-family: var(--font-mono);
+        font-size: 0.85em;
+        background-color: var(--color-charcoal-800);
+        padding: 0.15em 0.4em;
+        border-radius: 0.3em;
+    }
+
+    .prose-blog pre {
+        overflow-x: auto;
+        padding: 1em;
+        border-radius: 0.6em;
+        background-color: var(--color-charcoal-800);
+    }
+
+    .prose-blog pre code {
+        padding: 0;
+        background: none;
+    }
+}
