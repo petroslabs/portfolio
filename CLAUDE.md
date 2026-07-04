@@ -54,6 +54,25 @@ Polices (`@theme` → `fontFamily`) :
 - Éviter le CSS vanilla hors nécessité stricte (keyframes, texture de fond) :
   privilégier les utilitaires Tailwind.
 
+## Infrastructure Docker locale
+
+Le projet peut tourner dans l'infra Docker partagée `../symfony_env` (Traefik
++ PostgreSQL + Redis + Mailpit, commune à plusieurs projets Symfony) :
+- `Dockerfile` : image `dunglas/frankenphp:php8.4` + extension `pdo_pgsql`
+  (absente de l'image de base, requise par `doctrine/doctrine-bundle`).
+- `compose.yaml` : service `app` unique, rejoint le réseau externe
+  `symfony_env`, labels Traefik pour `petroslabs.localhost`. `SERVER_NAME=:80`
+  désactive la gestion HTTPS automatique de Caddy (Traefik termine déjà le
+  TLS) — sans ça, le port 80 interne ne fait que rediriger vers son propre 443.
+- `.env.local` (non versionné) pointe `DATABASE_URL`/`REDIS_URL`/`MAILER_DSN`
+  vers les services partagés (`symfony_env_postgresql`, `symfony_env_redis`,
+  `symfony_env_mailpit`) — voir le README pour le détail.
+- Limitation connue de `symfony_env` : son `docker-proxy` n'a pas la
+  permission `EVENTS`, donc Traefik ne détecte pas à chaud la
+  création/recréation du conteneur `petroslabs_app` — un
+  `docker compose restart traefik` (depuis `symfony_env`) est nécessaire
+  après chaque `docker compose up`/`--build` de ce projet.
+
 ## Architecture
 
 - `src/Controller/HomeController.php` : route `/`, reçoit le contenu du hub

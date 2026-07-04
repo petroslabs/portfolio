@@ -35,35 +35,79 @@ Voir [`CHANGELOG.md`](CHANGELOG.md) pour le détail des évolutions.
 ## Installation
 
 ```bash
-composer install
+make install
 ```
 
 ## Développement
 
+Un `Makefile` centralise les commandes courantes — `make help` liste tout.
+
 ```bash
 # Terminal 1 : recompile le CSS Tailwind à la volée
-php bin/console tailwind:build --watch
+make tailwind-watch
 
 # Terminal 2 : lance le serveur
-symfony serve
+make serve
 ```
 
 Le site est alors accessible sur http://localhost:8000.
 
-> Préférer `symfony serve` à `php -S ... public/index.php` : le serveur PHP
-> intégré a un conflit connu avec le Runtime Symfony sur les fichiers
-> statiques du dossier `public/` (ex. `robots.txt`), qui renvoient une 500.
-> `symfony serve` (et FrankenPHP en prod) n'ont pas ce problème.
+> Préférer `symfony serve` (`make serve`) à `php -S ... public/index.php` :
+> le serveur PHP intégré a un conflit connu avec le Runtime Symfony sur les
+> fichiers statiques du dossier `public/` (ex. `robots.txt`), qui renvoient
+> une 500. `symfony serve` (et FrankenPHP en prod) n'ont pas ce problème.
+
+Autres commandes utiles : `make lint` (Twig + YAML), `make test` (PHPUnit),
+`make cache-clear`.
+
+## Développement via Docker (infra `symfony_env`)
+
+Le projet peut aussi tourner dans l'infra Docker partagée
+[`symfony_env`](../symfony_env) (Traefik + PostgreSQL + Redis + Mailpit),
+utilisée par plusieurs projets Symfony.
+
+```bash
+# 1. Démarrer symfony_env si ce n'est pas déjà fait (depuis son propre dossier)
+cd ../symfony_env && make up
+
+# 2. Créer la base dédiée à ce projet (une fois)
+make db-create
+
+# 3. Créer .env.local (non versionné) avec les DSN partagés
+#    DATABASE_URL="postgresql://<POSTGRES_USER>:<POSTGRES_PASSWORD>@symfony_env_postgresql:5432/petroslabs?serverVersion=17&charset=utf8"
+#    REDIS_URL="redis://:<REDIS_PASSWORD>@symfony_env_redis:6379"
+#    MAILER_DSN="smtp://symfony_env_mailpit:1025"
+
+# 4. Démarrer le conteneur de l'app (construit l'image au besoin)
+make build
+make up
+```
+
+Le site est alors accessible sur https://petroslabs.localhost.
+
+> ⚠️ Le `docker-proxy` de `symfony_env` n'a pas la permission `EVENTS` : Traefik
+> ne détecte pas à chaud la création/recréation du conteneur `petroslabs_app`.
+> Après un `make build`/`up`, relancer Traefik une fois : `make traefik-restart`.
+
+Le `Dockerfile` ajoute `pdo_pgsql` à l'image `dunglas/frankenphp:php8.4` (absent
+par défaut), nécessaire pour la connexion PostgreSQL de `doctrine/doctrine-bundle`.
+
+Autres commandes : `make ps` / `make logs` / `make sh` (shell dans le
+conteneur) / `make console cmd="..."` (bin/console dans le conteneur) /
+`make db-drop`.
 
 ## Build de production
 
 ```bash
-php bin/console tailwind:build --minify
+make tailwind-build
 ```
 
 ## Structure
 
 ```
+Makefile                       # Commandes de dev/build/Docker (make help)
+Dockerfile                    # Image dev pour l'infra symfony_env (frankenphp + pdo_pgsql)
+compose.yaml                  # Service app + intégration Traefik (réseau symfony_env)
 config/hub.yaml              # Contenu de la landing (profil + liens du hub)
 config/projects.yaml         # Contenu de la page Projets
 config/uses.yaml             # Contenu de "L'établi"
