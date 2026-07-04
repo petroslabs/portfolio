@@ -1,0 +1,28 @@
+{% extends 'admin/base.html.twig' %}
+
+{% form_theme form 'admin/_form_theme.html.twig' %}
+
+{% block title %}Profil{% endblock %}
+
+{% block body %}
+<div class="mb-6 flex items-center justify-between">
+    <h1 class="font-display text-2xl font-bold text-parchment">Profil</h1>
+    <a href="{{ path('admin_hub_link_index') }}" class="font-mono text-xs text-parchment-dim hover:text-teal">Liens du hub →</a>
+</div>
+
+{{ form_start(form, {attr: {class: 'flex max-w-xl flex-col gap-4'}}) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.taglineFr) }}
+    {{ form_row(form.taglineEn) }}
+    {{ form_row(form.bioFr) }}
+    {{ form_row(form.bioEn) }}
+    {{ form_row(form.logo) }}
+    {{ form_row(form.banner) }}
+
+    <div class="mt-2 flex items-center gap-3">
+        <button type="submit" class="rounded-lg bg-teal/90 px-4 py-2 font-mono text-sm font-medium text-charcoal hover:bg-teal">
+            Enregistrer
+        </button>
+    </div>
+{{ form_end(form) }}
+{% endblock %}
