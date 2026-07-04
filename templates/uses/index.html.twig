@@ -29,7 +29,7 @@
         {% for group in uses %}
             <section class="animate-rise" style="animation-delay: {{ 80 + loop.index0 * 60 }}ms">
                 <h2 class="mb-3 font-mono text-xs uppercase tracking-[0.3em] text-bronze-bright">
-                    {{ group.category|localized }}
+                    {{ group.name|localized }}
                 </h2>
                 <dl class="divide-y divide-parchment/10 rounded-xl border border-parchment/10 bg-charcoal-800/60">
                     {% for item in group.items %}
