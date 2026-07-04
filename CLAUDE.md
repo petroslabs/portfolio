@@ -7,9 +7,11 @@ progressivement un blog, des projets et un espace admin.
 
 La **landing page (`/`)**, la **page Projets (`/projects`)**, **L'établi
 (`/uses`)** et le **blog (`/blog`)** sont implémentés, avec
-**internationalisation FR/EN**. L'admin (`Admin\`) n'est **pas encore
-développé** — le code est structuré pour l'accueillir sans refactoring, mais
-ne pas le générer sans demande explicite.
+**internationalisation FR/EN**. L'**espace Admin (`/admin`)** a démarré :
+authentification + CRUD Projets. Hub, Établi et Blog restent en
+YAML/Markdown pour l'instant — leur migration en base et leur CRUD admin
+sont prévus pour de prochaines itérations, ne pas les générer sans demande
+explicite.
 
 ## Direction artistique — à respecter impérativement
 
@@ -72,21 +74,24 @@ Le projet peut tourner dans l'infra Docker partagée `../symfony_env` (Traefik
   création/recréation du conteneur `petroslabs_app` — un
   `docker compose restart traefik` (depuis `symfony_env`) est nécessaire
   après chaque `docker compose up`/`--build` de ce projet.
+- `trusted_proxies` (`config/packages/framework.yaml`) : nécessaire pour que
+  Symfony sache qu'il est servi en HTTPS derrière Traefik (sinon URLs
+  canoniques/SEO en `http://` et validation CSRF cassée — voir `security.csrf
+  stateless_token_ids` ci-dessous). Ne pas retirer.
 
 ## Architecture
 
 - `src/Controller/HomeController.php` : route `/`, reçoit le contenu du hub
   via injection de paramètres (bind dans `config/services.yaml`). Conçu pour
   cohabiter avec de futurs `BlogController`, `Admin\…` sans modification.
-- `src/Controller/ProjectController.php` : route `/projects`, même pattern
-  d'injection que `HomeController`, contenu depuis `config/projects.yaml`.
+- `src/Controller/ProjectController.php` : route `/projects`, contenu via
+  `App\Repository\ProjectRepository` (base de données — voir section Admin).
 - `src/Controller/UsesController.php` : route `/uses`, contenu depuis
   `config/uses.yaml`.
-- `config/hub.yaml` / `config/projects.yaml` / `config/uses.yaml` : contenu
-  **en configuration YAML**, pas en base de données. Ce choix est volontaire
-  et temporaire — le jour où l'espace admin est développé, ce contenu
-  bascule en base (les projets y seront alors ajoutables directement) ; ne
-  pas anticiper cette migration avant qu'elle soit demandée.
+- `config/hub.yaml` / `config/uses.yaml` : contenu **en configuration YAML**,
+  pas en base de données. Ce choix est volontaire et temporaire — passeront
+  en base au fur et à mesure que l'espace Admin les couvrira (comme les
+  Projets) ; ne pas anticiper cette migration avant qu'elle soit demandée.
 - `src/Controller/BlogController.php` : routes `/blog` (liste) et
   `/blog/{slug}` (article). Contenu via `App\Blog\BlogPostRepository`, qui
   scanne `content/blog/{slug}.fr.md` / `.en.md` (frontmatter YAML +
@@ -142,6 +147,41 @@ Le projet peut tourner dans l'infra Docker partagée `../symfony_env` (Traefik
 - Toute nouvelle image destinée au web (screenshots, illustrations) : la
   compresser (WebP, ~150-300 Ko max) avant de l'ajouter — ne pas committer
   d'images brutes de plusieurs Mo.
+
+## Admin
+
+Espace `/admin`, en construction par itérations successives — voir "État
+actuel" pour la portée couverte à date.
+
+- **Authentification** : `App\Entity\User` (Doctrine), formulaire de
+  connexion classique (`symfony/security-bundle`, `form_login`), pas
+  d'inscription publique. Un seul compte, provisionné/mis à jour via
+  `php bin/console app:create-admin` (`src/Command/CreateAdminCommand.php`).
+  Firewall `main` : `/admin/login` public, `/admin/*` requiert `ROLE_ADMIN`
+  (`config/packages/security.yaml`).
+- **CRUD** : formulaires Symfony faits main (`src/Form/`, Twig,
+  `templates/admin/`) — EasyAdmin a été explicitement écarté pour garder le
+  contrôle sur le rendu. Layout admin (`templates/admin/base.html.twig`)
+  volontairement sobre/utilitaire, pas l'habillage antique du site public.
+  Toujours garder un lien visible vers le site public (`app_home`), y
+  compris sur l'écran de login.
+- **Tableau de bord** (`/admin`, `DashboardController`) : une carte par
+  section de contenu, même si toutes ne sont pas encore actives — ne pas
+  rediriger directement vers une section en particulier. Ajouter une
+  nouvelle carte (active) dès qu'une section rejoint l'Admin.
+- **Migration YAML → base** : chaque type de contenu couvert par l'Admin
+  bascule de sa config YAML vers une entité Doctrine + migration (reprenant
+  les données existantes), au moment où son CRUD est développé — pas avant.
+  Projets fait, Hub/Établi/Blog à venir.
+- **CSRF en environnement de test/debug** : le projet utilise la protection
+  CSRF *stateless* (`config/packages/csrf.yaml`,
+  `framework.csrf_protection.stateless_token_ids`) — le token rendu dans le
+  HTML est un placeholder fixe ("csrf-token"), complété côté client par
+  `assets/controllers/csrf_protection_controller.js` (Stimulus). Pour tester
+  une soumission de formulaire admin sans navigateur (ex. `curl`), envoyer un
+  header `Origin`/`Referer` same-origin suffit à valider la requête (cf.
+  `Symfony\Component\Security\Csrf\SameOriginCsrfTokenManager::isValidOrigin`)
+  — inutile de rejouer la mécanique JS du cookie à double soumission.
 
 ## Attentes de collaboration
 

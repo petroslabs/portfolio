@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noindex,nofollow">
+        <title>{% block title %}Admin{% endblock %} — PetrosLabs</title>
+
+        {% block stylesheets %}{% endblock %}
+
+        {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
+    </head>
+    <body class="min-h-screen bg-charcoal font-sans text-parchment antialiased">
+        <div class="mx-auto flex min-h-screen w-full max-w-4xl flex-col px-4 py-8 sm:px-6">
+            <header class="mb-8 flex items-center justify-between border-b border-parchment/10 pb-4">
+                <a href="{{ app.user ? path('admin_dashboard') : path('app_home') }}" class="font-display text-lg font-semibold tracking-wide text-parchment">
+                    PetrosLabs <span class="text-parchment-dim">/ admin</span>
+                </a>
+                <nav class="flex items-center gap-4 font-mono text-xs text-parchment-dim">
+                    <a href="{{ path('app_home') }}" class="hover:text-teal">← Retour au site</a>
+                    {% if app.user %}
+                        <a href="{{ path('admin_project_index') }}" class="hover:text-teal">Projets</a>
+                        <a href="{{ path('admin_logout') }}" class="hover:text-teal">Déconnexion</a>
+                    {% endif %}
+                </nav>
+            </header>
+
+            {% for message in app.flashes('success') %}
+                <div class="mb-4 rounded-lg border border-teal/30 bg-teal/10 px-4 py-2 text-sm text-teal">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+            <main class="flex-1">
+                {% block body %}{% endblock %}
+            </main>
+        </div>
+    </body>
+</html>

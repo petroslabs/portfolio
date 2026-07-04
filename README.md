@@ -15,7 +15,7 @@ lueurs teal/bronze nocturnes). Détails complets dans [`CLAUDE.md`](CLAUDE.md).
 - ✅ Internationalisation FR/EN (sans préfixe d'URL, cookie de préférence)
 - ✅ SEO de base (robots.txt, sitemap, canonical, og:image, JSON-LD)
 - ✅ Blog (`/blog`) — articles en Markdown
-- ⬜ Espace admin (`Admin\`)
+- 🟨 Espace admin (`/admin`) — auth + CRUD Projets ; Hub/Établi/Blog à venir
 
 Voir [`CHANGELOG.md`](CHANGELOG.md) pour le détail des évolutions.
 
@@ -92,6 +92,12 @@ Le site est alors accessible sur https://petroslabs.localhost.
 Le `Dockerfile` ajoute `pdo_pgsql` à l'image `dunglas/frankenphp:php8.4` (absent
 par défaut), nécessaire pour la connexion PostgreSQL de `doctrine/doctrine-bundle`.
 
+`trusted_proxies` (`config/packages/framework.yaml`) fait confiance à Traefik
+comme proxy immédiat — sans ça, Symfony croit être servi en HTTP (le
+conteneur ne voit que du trafic HTTP en interne) et génère des URLs
+canoniques/SEO en `http://` au lieu de `https://`, en plus de casser la
+validation CSRF des formulaires.
+
 Autres commandes : `make ps` / `make logs` / `make sh` (shell dans le
 conteneur) / `make console cmd="..."` (bin/console dans le conteneur) /
 `make db-drop`.
@@ -109,11 +115,16 @@ Makefile                       # Commandes de dev/build/Docker (make help)
 Dockerfile                    # Image dev pour l'infra symfony_env (frankenphp + pdo_pgsql)
 compose.yaml                  # Service app + intégration Traefik (réseau symfony_env)
 config/hub.yaml              # Contenu de la landing (profil + liens du hub)
-config/projects.yaml         # Contenu de la page Projets
 config/uses.yaml             # Contenu de "L'établi"
 content/blog/                # Articles de blog en Markdown ({slug}.fr.md / {slug}.en.md)
+migrations/                   # Migrations Doctrine (schéma + données reprises des YAML supprimés)
 src/Blog/                     # BlogPost (DTO), BlogPostRepository (lecture/parsing des articles)
+src/Command/                   # CreateAdminCommand (app:create-admin)
+src/Entity/                    # User, Project (Doctrine ORM)
+src/Repository/                # UserRepository, ProjectRepository
+src/Form/                      # ProjectType
 src/Controller/               # HomeController, ProjectController, UsesController, BlogController, LocaleController, SitemapController
+src/Controller/Admin/          # SecurityController (login/logout), ProjectController (CRUD)
 src/EventListener/            # LocaleSubscriber (langue depuis le cookie)
 src/Twig/                     # LocalizedContentExtension (filtre |localized)
 translations/                 # messages.fr.yaml / messages.en.yaml (libellés d'interface)
@@ -123,6 +134,7 @@ templates/
 ├── projects/                 # Page Projets
 ├── uses/                     # Page L'établi
 ├── blog/                     # Liste des articles + page article
+├── admin/                    # Espace admin (layout, login, CRUD Projets)
 ├── sitemap/                  # Template XML du sitemap
 └── components/                # Composants Twig réutilisables (LinkCard, ProjectCard, PostCard, Meander, SiteFooter…)
 assets/styles/app.css         # Thème Tailwind (@theme : palette, polices, animations) + typographie .prose-blog
@@ -155,6 +167,29 @@ public/robots.txt             # Autorise l'indexation, référence le sitemap
   `content/blog/mon-slug.en.md`, chacun avec son frontmatter — aucune autre
   étape nécessaire, il apparaît automatiquement sur `/blog` et dans le
   sitemap.
+
+## Admin
+
+Espace `/admin`, protégé par authentification — première itération : CRUD
+Projets uniquement. Le Hub et L'établi restent en YAML pour l'instant, le
+Blog en Markdown ; ils passeront en base dans une prochaine itération.
+
+- Un seul compte admin, pas d'inscription publique. Le créer (ou changer son
+  mot de passe) :
+  ```bash
+  make console cmd="app:create-admin"
+  ```
+- Connexion : `/admin/login` (formulaire), déconnexion via le lien dans
+  l'en-tête admin.
+- Tableau de bord : `/admin` — une carte par section de contenu (Projets
+  actif, Hub/Établi/Blog affichés "Bientôt" en attendant leur migration en
+  base). Le login y redirige.
+- Projets : `/admin/projects` (liste, création, édition, suppression) —
+  formulaires Symfony faits main (pas d'EasyAdmin), gabarit sobre et
+  utilitaire (`templates/admin/`), sans l'habillage antique du site public.
+- Contenu en base (`App\Entity\Project`), plus dans `config/projects.yaml`
+  (supprimé) — la page publique `/projects` lit désormais
+  `ProjectRepository`.
 
 ## Internationalisation
 

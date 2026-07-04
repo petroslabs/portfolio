@@ -94,6 +94,18 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
   `lint`, `test`, `cache-clear`) et de gestion Docker (`build`, `up`, `down`,
   `logs`, `sh`, `console`, `traefik-restart`, `db-create`/`db-drop`) — `make
   help` liste tout.
+- Espace Admin (`/admin`), première itération : authentification
+  (`App\Entity\User`, formulaire de connexion `/admin/login`, un seul compte
+  provisionné via `app:create-admin`) et CRUD complet des Projets
+  (`/admin/projects`), formulaires Symfony faits main (pas d'EasyAdmin).
+  Tableau de bord (`/admin`) : une carte par section de contenu (Projets
+  actif, Hub/Établi/Blog affichés "Bientôt" en attendant leur migration en
+  base) — le login y redirige (`default_target_path`).
+  - Les Projets passent de `config/projects.yaml` (supprimé) à une table
+    `project` en base — `App\Entity\Project`, `ProjectRepository`, migration
+    Doctrine reprenant le contenu existant. Le Hub et L'établi restent en
+    YAML pour l'instant (prochaine itération) ; le Blog migrera en base plus
+    tard aussi.
 
 ### Modifié
 - Retrait des références à la métaphore de la « forge » au profit du
@@ -112,3 +124,13 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 ### Corrigé
 - Lien Email du hub : utilisation du schéma `mailto:` (le lien ouvrait une
   page relative au lieu du client mail).
+- `trusted_proxies` (`config/packages/framework.yaml`) : Symfony ne faisait
+  pas confiance à Traefik comme proxy, donc croyait être servi en HTTP (le
+  conteneur ne voit que du trafic HTTP en interne, Traefik terminant le
+  TLS) — cassait les URLs canoniques/SEO (`https://` attendu) et la
+  validation CSRF des formulaires admin derrière l'infra `symfony_env`.
+- `/admin` (sans suffixe) renvoyait une 404 (aucune route ne le couvrait) —
+  ajout de `DashboardController`.
+- Layout admin (`templates/admin/base.html.twig`) : aucun moyen de revenir
+  au site public depuis `/admin/login` — un lien "← Retour au site" est
+  désormais toujours visible.

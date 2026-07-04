@@ -7,8 +7,6 @@
 imports:
     # Contenu de la landing (profil + liens du hub)
     - { resource: hub.yaml }
-    # Contenu de la page Projets
-    - { resource: projects.yaml }
     # Contenu de "L'établi"
     - { resource: uses.yaml }
 
@@ -25,8 +23,6 @@ services:
             # Contenu du hub injecté depuis config/hub.yaml
             $profile: '%app.profile%'
             $hubLinks: '%app.hub_links%'
-            # Contenu de la page Projets injecté depuis config/projects.yaml
-            $projects: '%app.projects%'
             # Contenu de "L'établi" injecté depuis config/uses.yaml
             $uses: '%app.uses%'
             # Répertoire des articles de blog (Markdown), lu par BlogPostRepository

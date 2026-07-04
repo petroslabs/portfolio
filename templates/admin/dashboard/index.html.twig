@@ -1,0 +1,30 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Tableau de bord{% endblock %}
+
+{% block body %}
+<h1 class="mb-6 font-display text-2xl font-bold text-parchment">Tableau de bord</h1>
+
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <a href="{{ path('admin_project_index') }}"
+       class="group rounded-lg border border-parchment/10 bg-charcoal-800/60 p-5 transition duration-300 ease-out hover:-translate-y-0.5 hover:border-teal/40 hover:shadow-lg hover:shadow-teal/10">
+        <h2 class="font-display text-lg font-semibold tracking-wide text-parchment group-hover:text-teal">Projets</h2>
+        <p class="mt-1 text-sm text-parchment-dim">{{ projectCount }} projet{{ projectCount > 1 ? 's' : '' }}</p>
+    </a>
+
+    <div class="rounded-lg border border-parchment/10 bg-charcoal-800/30 p-5 opacity-50">
+        <h2 class="font-display text-lg font-semibold tracking-wide text-parchment">Hub</h2>
+        <p class="mt-1 text-sm text-parchment-dim">Bientôt — encore en YAML</p>
+    </div>
+
+    <div class="rounded-lg border border-parchment/10 bg-charcoal-800/30 p-5 opacity-50">
+        <h2 class="font-display text-lg font-semibold tracking-wide text-parchment">L'établi</h2>
+        <p class="mt-1 text-sm text-parchment-dim">Bientôt — encore en YAML</p>
+    </div>
+
+    <div class="rounded-lg border border-parchment/10 bg-charcoal-800/30 p-5 opacity-50">
+        <h2 class="font-display text-lg font-semibold tracking-wide text-parchment">Blog</h2>
+        <p class="mt-1 text-sm text-parchment-dim">Bientôt — encore en Markdown</p>
+    </div>
+</div>
+{% endblock %}

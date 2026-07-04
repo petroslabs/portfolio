@@ -1,0 +1,45 @@
+{% use 'form_div_layout.html.twig' %}
+
+{% block form_label %}
+    {% if label is not same as(false) %}
+        <label{% if label_attr %}{% with {attr: label_attr} %}{{ block('attributes') }}{% endwith %}{% endif %} class="mb-1 block font-mono text-xs uppercase tracking-wide text-parchment-dim">
+            {{ label|trans(label_translation_parameters, translation_domain) }}
+        </label>
+    {% endif %}
+{% endblock %}
+
+{% block form_widget_simple %}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' w-full rounded-lg border border-parchment/10 bg-charcoal-800 px-3 py-2 text-parchment focus:border-teal focus:outline-none')|trim}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block textarea_widget %}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' w-full rounded-lg border border-parchment/10 bg-charcoal-800 px-3 py-2 text-parchment focus:border-teal focus:outline-none')|trim, rows: attr.rows|default(4)}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block choice_widget_collapsed %}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' w-full rounded-lg border border-parchment/10 bg-charcoal-800 px-3 py-2 text-parchment focus:border-teal focus:outline-none')|trim}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block form_row %}
+    <div class="mb-1">
+        {{ form_label(form) }}
+        {{ form_widget(form) }}
+        {{ form_errors(form) }}
+        {% if help is not empty %}
+            <p class="mt-1 text-xs text-parchment-dim/70">{{ help|trans(help_translation_parameters, translation_domain) }}</p>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block form_errors %}
+    {% if errors|length > 0 %}
+        <ul class="mt-1 text-xs text-bronze-bright">
+            {% for error in errors %}
+                <li>{{ error.message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
