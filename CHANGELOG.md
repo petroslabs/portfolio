@@ -106,6 +106,13 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
     Doctrine reprenant le contenu existant. Le Hub et L'établi restent en
     YAML pour l'instant (prochaine itération) ; le Blog migrera en base plus
     tard aussi.
+- CRUD Hub dans l'Admin : profil (`/admin/profile`, édition seule — c'est un
+  singleton) et liens du hub (`/admin/hub-links`, CRUD complet). Le Hub
+  passe de `config/hub.yaml` (supprimé) aux tables `profile`/`hub_link` en
+  base — `App\Entity\Profile`, `App\Entity\HubLink`, migration Doctrine
+  reprenant le contenu existant. `HomeController` (public) lit désormais
+  `ProfileRepository`/`HubLinkRepository`. Carte "Hub" du tableau de bord
+  admin activée.
 
 ### Modifié
 - Retrait des références à la métaphore de la « forge » au profit du

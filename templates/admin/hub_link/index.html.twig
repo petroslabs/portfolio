@@ -1,0 +1,49 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Liens du hub{% endblock %}
+
+{% block body %}
+<div class="mb-6 flex items-center justify-between">
+    <h1 class="font-display text-2xl font-bold text-parchment">Liens du hub</h1>
+    <div class="flex items-center gap-4">
+        <a href="{{ path('admin_profile_edit') }}" class="font-mono text-xs text-parchment-dim hover:text-teal">Modifier le profil</a>
+        <a href="{{ path('admin_hub_link_new') }}" class="rounded-lg bg-teal/90 px-3 py-1.5 font-mono text-xs font-medium text-charcoal hover:bg-teal">
+            + Nouveau lien
+        </a>
+    </div>
+</div>
+
+<div class="overflow-x-auto rounded-lg border border-parchment/10">
+    <table class="w-full text-left text-sm">
+        <thead class="bg-charcoal-800 font-mono text-xs uppercase tracking-wide text-parchment-dim">
+            <tr>
+                <th class="px-4 py-3">Position</th>
+                <th class="px-4 py-3">Libellé</th>
+                <th class="px-4 py-3">URL</th>
+                <th class="px-4 py-3"></th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-parchment/10">
+            {% for hubLink in hubLinks %}
+                <tr>
+                    <td class="px-4 py-3 text-parchment-dim">{{ hubLink.position }}</td>
+                    <td class="px-4 py-3 text-parchment">{{ hubLink.labelFr }}</td>
+                    <td class="px-4 py-3 text-parchment-dim">{{ hubLink.url }}</td>
+                    <td class="px-4 py-3 text-right">
+                        <a href="{{ path('admin_hub_link_edit', {id: hubLink.id}) }}" class="mr-3 text-teal hover:underline">Éditer</a>
+                        <form action="{{ path('admin_hub_link_delete', {id: hubLink.id}) }}" method="post" class="inline"
+                              onsubmit="return confirm('Supprimer ce lien ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-hub-link-' ~ hubLink.id) }}">
+                            <button type="submit" class="text-bronze-bright hover:underline">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4" class="px-4 py-6 text-center text-parchment-dim">Aucun lien pour le moment.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

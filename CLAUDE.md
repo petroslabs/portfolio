@@ -7,8 +7,8 @@ progressivement un blog, des projets et un espace admin.
 
 La **landing page (`/`)**, la **page Projets (`/projects`)**, **L'établi
 (`/uses`)** et le **blog (`/blog`)** sont implémentés, avec
-**internationalisation FR/EN**. L'**espace Admin (`/admin`)** a démarré :
-authentification + CRUD Projets. Hub, Établi et Blog restent en
+**internationalisation FR/EN**. L'**espace Admin (`/admin`)** couvre
+l'authentification, les Projets et le Hub. Établi et Blog restent en
 YAML/Markdown pour l'instant — leur migration en base et leur CRUD admin
 sont prévus pour de prochaines itérations, ne pas les générer sans demande
 explicite.
@@ -81,17 +81,17 @@ Le projet peut tourner dans l'infra Docker partagée `../symfony_env` (Traefik
 
 ## Architecture
 
-- `src/Controller/HomeController.php` : route `/`, reçoit le contenu du hub
-  via injection de paramètres (bind dans `config/services.yaml`). Conçu pour
-  cohabiter avec de futurs `BlogController`, `Admin\…` sans modification.
+- `src/Controller/HomeController.php` : route `/`, contenu via
+  `App\Repository\ProfileRepository`/`HubLinkRepository` (base de données —
+  voir section Admin).
 - `src/Controller/ProjectController.php` : route `/projects`, contenu via
   `App\Repository\ProjectRepository` (base de données — voir section Admin).
 - `src/Controller/UsesController.php` : route `/uses`, contenu depuis
   `config/uses.yaml`.
-- `config/hub.yaml` / `config/uses.yaml` : contenu **en configuration YAML**,
-  pas en base de données. Ce choix est volontaire et temporaire — passeront
-  en base au fur et à mesure que l'espace Admin les couvrira (comme les
-  Projets) ; ne pas anticiper cette migration avant qu'elle soit demandée.
+- `config/uses.yaml` : contenu **en configuration YAML**, pas en base de
+  données. Ce choix est volontaire et temporaire — passera en base quand
+  l'espace Admin le couvrira (comme Hub et Projets) ; ne pas anticiper cette
+  migration avant qu'elle soit demandée.
 - `src/Controller/BlogController.php` : routes `/blog` (liste) et
   `/blog/{slug}` (article). Contenu via `App\Blog\BlogPostRepository`, qui
   scanne `content/blog/{slug}.fr.md` / `.en.md` (frontmatter YAML +
@@ -116,12 +116,16 @@ Le projet peut tourner dans l'infra Docker partagée `../symfony_env` (Traefik
   route `/lang/{locale}`) et lue à chaque requête par `LocaleSubscriber`
   (`src/EventListener/`).
 - **Contenu éditorial** (bio, tagline, résumés de projets, items de
-  l'établi…) : champs `{ fr: '...', en: '...' }` directement dans les YAML
-  de contenu (`hub.yaml`, `projects.yaml`, `uses.yaml`), résolus dans les
-  templates par le filtre Twig `\|localized`
-  (`src/Twig/LocalizedContentExtension.php`). Un champ resté en simple
-  chaîne (nom propre, valeur technique) est renvoyé tel quel par ce filtre —
-  ne pas forcer un `{ fr, en }` quand la valeur ne change pas de langue.
+  l'établi…) : résolu dans les templates par le filtre Twig `\|localized`
+  (`src/Twig/LocalizedContentExtension.php`), qui attend un tableau
+  `{ fr: '...', en: '...' }`. Un champ resté en simple chaîne (nom propre,
+  valeur technique) est renvoyé tel quel par ce filtre — ne pas forcer un
+  `{ fr, en }` quand la valeur ne change pas de langue. Selon le contenu :
+  - encore en YAML (`uses.yaml`) : le tableau est écrit directement dans le
+    fichier.
+  - en base (Hub, Projets) : deux colonnes distinctes (`nomFr`/`nomEn`) sur
+    l'entité Doctrine, plus un accesseur `getNom(): array` qui recompose le
+    tableau `{ fr, en }` pour que le template n'ait rien à changer.
 - **Libellés d'interface** (menus, badges de statut, boutons, footer,
   titres/meta de page) : clés de traduction dans
   `translations/messages.fr.yaml` / `messages.en.yaml`, via le filtre
@@ -172,7 +176,14 @@ actuel" pour la portée couverte à date.
 - **Migration YAML → base** : chaque type de contenu couvert par l'Admin
   bascule de sa config YAML vers une entité Doctrine + migration (reprenant
   les données existantes), au moment où son CRUD est développé — pas avant.
-  Projets fait, Hub/Établi/Blog à venir.
+  Projets et Hub faits, Établi/Blog à venir.
+- **Hub** : profil (`App\Entity\Profile`, singleton — une seule ligne,
+  `/admin/profile` en édition seule, pas de create/delete) et liens
+  (`App\Entity\HubLink`, `/admin/hub-links`, CRUD complet, champ `position`
+  pour l'ordre d'affichage). Champs bilingues stockés en deux colonnes
+  (`labelFr`/`labelEn`, etc.) avec un accesseur `getLabel(): array` qui
+  recompose `{ fr, en }` pour rester compatible avec le filtre `|localized`
+  dans les templates — même trick que `Project::getSummary()`.
 - **CSRF en environnement de test/debug** : le projet utilise la protection
   CSRF *stateless* (`config/packages/csrf.yaml`,
   `framework.csrf_protection.stateless_token_ids`) — le token rendu dans le
