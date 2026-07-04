@@ -35,9 +35,6 @@ class Profile
     #[ORM\Column(type: Types::TEXT)]
     private string $bioEn = '';
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $banner = null;
-
     #[ORM\Column(length: 255)]
     private string $logo = '';
 
@@ -122,18 +119,6 @@ class Profile
     public function getBio(): array
     {
         return ['fr' => $this->bioFr, 'en' => $this->bioEn];
-    }
-
-    public function getBanner(): ?string
-    {
-        return $this->banner;
-    }
-
-    public function setBanner(?string $banner): static
-    {
-        $this->banner = $banner;
-
-        return $this;
     }
 
     public function getLogo(): string

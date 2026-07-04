@@ -25,15 +25,6 @@
 
     {# ── Entête : logo + identité ────────────────────────────────────────── #}
     <header class="animate-rise">
-        {# Bannière — désactivée pour le moment, réactiver + restaurer la marge
-           négative du logo ci-dessous ("-mt-14 ... sm:-mt-16") le jour venu
-        <div class="relative mt-6 overflow-hidden rounded-2xl border border-parchment/10 shadow-lg sm:mt-10">
-            <img src="{{ asset(profile.banner) }}" alt="Bannière de {{ profile.name }}"
-                 class="h-36 w-full object-cover sm:h-52" width="1600" height="400" loading="eager">
-            <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/30 to-transparent"></div>
-        </div>
-        #}
-
         {# Logo / avatar #}
         <div class="mt-8 flex justify-center sm:mt-10">
             <img src="{{ asset(profile.logo) }}" alt="Logo de {{ profile.name }}"

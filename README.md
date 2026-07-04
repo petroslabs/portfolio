@@ -9,7 +9,7 @@ lueurs teal/bronze nocturnes). Détails complets dans [`CLAUDE.md`](CLAUDE.md).
 
 ## État du projet
 
-- ✅ Landing page (`/`) — hub central avec bannière, logo, bio et grille de liens
+- ✅ Landing page (`/`) — hub central avec logo, bio et grille de liens
 - ✅ Projets (`/projects`) — vitrine des projets
 - ✅ L'établi (`/uses`) — outils, stack et matériel au quotidien
 - ✅ Internationalisation FR/EN (sans préfixe d'URL, cookie de préférence)

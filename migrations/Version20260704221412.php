@@ -31,7 +31,7 @@ final class Version20260704221412 extends AbstractMigration
                 'ancient discipline, modern code',
                 'Ici, la rigueur spartiate rencontre le code d''aujourd''hui, entre colonnes de marbre et lueurs de terminal. Bienvenue au laboratoire.',
                 'Here, Spartan discipline meets modern code, between marble columns and the glow of a terminal. Welcome to the lab.',
-                'images/banner.png',
+                'images/banner.webp',
                 'images/logo.png'
             )
             SQL);

@@ -25,11 +25,6 @@ final class ProfileType extends AbstractType
                 'label' => 'Logo',
                 'help' => 'Chemin relatif à assets/ (ex. images/logo.png)',
             ])
-            ->add('banner', TextType::class, [
-                'label' => 'Bannière',
-                'required' => false,
-                'help' => 'Chemin relatif à assets/ — bannière actuellement désactivée sur la landing',
-            ])
         ;
     }
 
