@@ -93,6 +93,24 @@ Polices (`@theme` → `fontFamily`) :
 - Quand un nouveau champ éditorial est ajouté, l'ajouter en bilingue dès le
   départ (même schéma `{ fr, en }`) plutôt que de le rattraper après coup.
 
+## SEO
+
+- `public/robots.txt` (statique) + `/sitemap.xml` (`SitemapController`,
+  généré depuis les routes — à étendre avec les futures URLs du blog).
+- `templates/base.html.twig` : URL canonique, `og:image`/Open Graph/Twitter
+  Card complets, bloc Twig `{% block schema %}` pour le JSON-LD (rempli par
+  `home/index.html.twig` avec un schema `Person`).
+- **Limite assumée et ne pas tenter de la contourner sans validation** :
+  l'i18n cookie/sans-préfixe empêche un hreflang correct — seule la version
+  FR (par défaut, sans cookie) est indexée par les moteurs de recherche.
+  L'EN reste un confort pour les visiteurs humains, pas un contenu
+  référencé séparément. Revoir ce choix impliquerait de repasser sur
+  l'architecture des routes (préfixe `/en/…`), à ne faire que sur demande
+  explicite.
+- Toute nouvelle image destinée au web (screenshots, illustrations) : la
+  compresser (WebP, ~150-300 Ko max) avant de l'ajouter — ne pas committer
+  d'images brutes de plusieurs Mo.
+
 ## Attentes de collaboration
 
 - **Tenir le `CHANGELOG.md` à jour** : à chaque modification notable

@@ -6,10 +6,30 @@
         <title>{% block title %}{{ 'home.meta_title'|trans }}{% endblock %}</title>
         <meta name="description" content="{% block meta_description %}{{ 'home.meta_description'|trans }}{% endblock %}">
 
+        {# URL canonique (sans query string) — la version FR est celle indexée par
+           les moteurs de recherche : notre i18n cookie/sans-préfixe ne permet pas
+           un hreflang correct, l'EN reste une option de confort pour les humains #}
+        {% set canonicalUrl = app.request.schemeAndHttpHost ~ app.request.pathInfo %}
+        <link rel="canonical" href="{{ canonicalUrl }}">
+
         {# Open Graph / partage social #}
         <meta property="og:title" content="{{ block('title') }}">
         <meta property="og:description" content="{{ block('meta_description') }}">
         <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ canonicalUrl }}">
+        <meta property="og:locale" content="{{ app.request.locale == 'fr' ? 'fr_FR' : 'en_US' }}">
+        <meta property="og:image" content="{{ absolute_url(asset('images/og-image.png')) }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+
+        {# Twitter Card : simple protocole de meta tags, lu en fallback par d'autres
+           plateformes de partage — aucun lien visible vers X sur le site #}
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ block('title') }}">
+        <meta name="twitter:description" content="{{ block('meta_description') }}">
+        <meta name="twitter:image" content="{{ absolute_url(asset('images/og-image.png')) }}">
+
+        {% block schema %}{% endblock %}
 
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.1em%22 font-size=%22104%22>🏛️</text></svg>">
 
