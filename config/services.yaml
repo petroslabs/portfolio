@@ -13,9 +13,6 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-        bind:
-            # Répertoire des articles de blog (Markdown), lu par BlogPostRepository
-            $contentDir: '%kernel.project_dir%/content/blog'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
