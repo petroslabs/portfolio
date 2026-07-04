@@ -15,7 +15,7 @@ lueurs teal/bronze nocturnes). Détails complets dans [`CLAUDE.md`](CLAUDE.md).
 - ✅ Internationalisation FR/EN (sans préfixe d'URL, cookie de préférence)
 - ✅ SEO de base (robots.txt, sitemap, canonical, og:image, JSON-LD)
 - ✅ Blog (`/blog`) — articles en Markdown
-- 🟨 Espace admin (`/admin`) — auth + CRUD Projets + Hub ; Établi/Blog à venir
+- 🟨 Espace admin (`/admin`) — auth + CRUD Projets, Hub, Établi ; Blog à venir
 
 Voir [`CHANGELOG.md`](CHANGELOG.md) pour le détail des évolutions.
 
@@ -114,16 +114,15 @@ make tailwind-build
 Makefile                       # Commandes de dev/build/Docker (make help)
 Dockerfile                    # Image dev pour l'infra symfony_env (frankenphp + pdo_pgsql)
 compose.yaml                  # Service app + intégration Traefik (réseau symfony_env)
-config/uses.yaml             # Contenu de "L'établi"
 content/blog/                # Articles de blog en Markdown ({slug}.fr.md / {slug}.en.md)
 migrations/                   # Migrations Doctrine (schéma + données reprises des YAML supprimés)
 src/Blog/                     # BlogPost (DTO), BlogPostRepository (lecture/parsing des articles)
 src/Command/                   # CreateAdminCommand (app:create-admin)
-src/Entity/                    # User, Project, Profile, HubLink (Doctrine ORM)
-src/Repository/                # UserRepository, ProjectRepository, ProfileRepository, HubLinkRepository
-src/Form/                      # ProjectType, ProfileType, HubLinkType
+src/Entity/                    # User, Project, Profile, HubLink, UseCategory, UseItem (Doctrine ORM)
+src/Repository/                # UserRepository, ProjectRepository, ProfileRepository, HubLinkRepository, UseCategoryRepository, UseItemRepository
+src/Form/                      # ProjectType, ProfileType, HubLinkType, UseCategoryType, UseItemType
 src/Controller/               # HomeController, ProjectController, UsesController, BlogController, LocaleController, SitemapController
-src/Controller/Admin/          # DashboardController, SecurityController (login/logout), ProjectController, ProfileController, HubLinkController (CRUD)
+src/Controller/Admin/          # DashboardController, SecurityController (login/logout), ProjectController, ProfileController, HubLinkController, UseCategoryController, UseItemController (CRUD)
 src/EventListener/            # LocaleSubscriber (langue depuis le cookie)
 src/Twig/                     # LocalizedContentExtension (filtre |localized)
 translations/                 # messages.fr.yaml / messages.en.yaml (libellés d'interface)
@@ -133,7 +132,7 @@ templates/
 ├── projects/                 # Page Projets
 ├── uses/                     # Page L'établi
 ├── blog/                     # Liste des articles + page article
-├── admin/                    # Espace admin (layout, login, tableau de bord, CRUD Projets/Hub)
+├── admin/                    # Espace admin (layout, login, tableau de bord, CRUD Projets/Hub/Établi)
 ├── sitemap/                  # Template XML du sitemap
 └── components/                # Composants Twig réutilisables (LinkCard, ProjectCard, PostCard, Meander, SiteFooter…)
 assets/styles/app.css         # Thème Tailwind (@theme : palette, polices, animations) + typographie .prose-blog
@@ -170,8 +169,8 @@ public/robots.txt             # Autorise l'indexation, référence le sitemap
 ## Admin
 
 Espace `/admin`, protégé par authentification — couvre pour l'instant les
-Projets et le Hub. L'établi reste en YAML, le Blog en Markdown ; ils
-passeront en base dans une prochaine itération.
+Projets, le Hub et L'établi. Le Blog reste en Markdown ; il passera en base
+dans une prochaine itération.
 
 - Un seul compte admin, pas d'inscription publique. Le créer (ou changer son
   mot de passe) :
@@ -180,8 +179,8 @@ passeront en base dans une prochaine itération.
   ```
 - Connexion : `/admin/login` (formulaire), déconnexion via le lien dans
   l'en-tête admin.
-- Tableau de bord : `/admin` — une carte par section de contenu (Projets et
-  Hub actifs, Établi/Blog affichés "Bientôt" en attendant leur migration en
+- Tableau de bord : `/admin` — une carte par section de contenu (Projets,
+  Hub et Établi actifs, Blog affiché "Bientôt" en attendant sa migration en
   base). Le login y redirige.
 - Projets : `/admin/projects` (liste, création, édition, suppression) —
   formulaires Symfony faits main (pas d'EasyAdmin), gabarit sobre et
@@ -192,6 +191,11 @@ passeront en base dans une prochaine itération.
   `/admin/hub-links` (liens du hub — liste, création, édition, suppression).
   Contenu en base (`App\Entity\Profile`, `App\Entity\HubLink`) — la landing
   publique (`/`) lit `ProfileRepository`/`HubLinkRepository`.
+- L'établi : `/admin/uses` (catégories — liste, création, édition,
+  suppression) et items (rattachés à une catégorie, même CRUD). Supprimer
+  une catégorie supprime ses items. Contenu en base (`App\Entity\UseCategory`,
+  `App\Entity\UseItem`) — la page publique `/uses` lit
+  `UseCategoryRepository`.
 
 ## Internationalisation
 

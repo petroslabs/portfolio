@@ -113,6 +113,14 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
   reprenant le contenu existant. `HomeController` (public) lit désormais
   `ProfileRepository`/`HubLinkRepository`. Carte "Hub" du tableau de bord
   admin activée.
+- CRUD L'établi dans l'Admin : catégories (`/admin/uses`, liste + CRUD) et
+  items (`/admin/uses/items/...`, CRUD, rattachés à une catégorie). L'établi
+  passe de `config/uses.yaml` (supprimé) aux tables `use_category`/`use_item`
+  en base — `App\Entity\UseCategory` (avec ses items en collection triée par
+  position), `App\Entity\UseItem`, migration Doctrine reprenant le contenu
+  existant. Suppression d'une catégorie entraîne celle de ses items
+  (`orphanRemoval`). `UsesController` (public) lit désormais
+  `UseCategoryRepository`. Carte "L'établi" du tableau de bord admin activée.
 
 ### Modifié
 - Retrait du champ bannière du profil (`App\Entity\Profile`) : essayé avec

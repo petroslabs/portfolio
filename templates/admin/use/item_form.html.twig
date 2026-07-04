@@ -1,0 +1,27 @@
+{% extends 'admin/base.html.twig' %}
+
+{% form_theme form 'admin/_form_theme.html.twig' %}
+
+{% block title %}{{ item.id ? 'Éditer' : 'Nouvel' }} item{% endblock %}
+
+{% block body %}
+<h1 class="mb-6 font-display text-2xl font-bold text-parchment">
+    {{ item.id ? "Éditer l'item" : "Nouvel item" }}
+</h1>
+
+{{ form_start(form, {attr: {class: 'flex max-w-xl flex-col gap-4'}}) }}
+    {{ form_row(form.category) }}
+    {{ form_row(form.nameFr) }}
+    {{ form_row(form.nameEn) }}
+    {{ form_row(form.valueFr) }}
+    {{ form_row(form.valueEn) }}
+    {{ form_row(form.position) }}
+
+    <div class="mt-2 flex items-center gap-3">
+        <button type="submit" class="rounded-lg bg-teal/90 px-4 py-2 font-mono text-sm font-medium text-charcoal hover:bg-teal">
+            Enregistrer
+        </button>
+        <a href="{{ path('admin_use_category_index') }}" class="font-mono text-sm text-parchment-dim hover:text-parchment">Annuler</a>
+    </div>
+{{ form_end(form) }}
+{% endblock %}

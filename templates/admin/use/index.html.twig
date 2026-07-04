@@ -1,0 +1,59 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}L'établi{% endblock %}
+
+{% block body %}
+<div class="mb-6 flex items-center justify-between">
+    <h1 class="font-display text-2xl font-bold text-parchment">L'établi</h1>
+    <a href="{{ path('admin_use_category_new') }}" class="rounded-lg bg-teal/90 px-3 py-1.5 font-mono text-xs font-medium text-charcoal hover:bg-teal">
+        + Nouvelle catégorie
+    </a>
+</div>
+
+<div class="flex flex-col gap-6">
+    {% for category in categories %}
+        <section class="rounded-lg border border-parchment/10 bg-charcoal-800/60">
+            <div class="flex items-center justify-between border-b border-parchment/10 px-4 py-3">
+                <h2 class="font-display text-base font-semibold tracking-wide text-parchment">
+                    {{ category.nameFr }} <span class="font-mono text-xs text-parchment-dim">#{{ category.position }}</span>
+                </h2>
+                <div class="flex items-center gap-3 font-mono text-xs">
+                    <a href="{{ path('admin_use_item_new', {category: category.id}) }}" class="text-teal hover:underline">+ Item</a>
+                    <a href="{{ path('admin_use_category_edit', {id: category.id}) }}" class="text-teal hover:underline">Éditer</a>
+                    <form action="{{ path('admin_use_category_delete', {id: category.id}) }}" method="post" class="inline"
+                          onsubmit="return confirm('Supprimer cette catégorie et tous ses items ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete-use-category-' ~ category.id) }}">
+                        <button type="submit" class="text-bronze-bright hover:underline">Supprimer</button>
+                    </form>
+                </div>
+            </div>
+
+            <table class="w-full text-left text-sm">
+                <tbody class="divide-y divide-parchment/10">
+                    {% for item in category.items %}
+                        <tr>
+                            <td class="px-4 py-2 text-parchment-dim">{{ item.position }}</td>
+                            <td class="px-4 py-2 text-parchment">{{ item.nameFr }}</td>
+                            <td class="px-4 py-2 text-parchment-dim">{{ item.valueFr }}</td>
+                            <td class="px-4 py-2 text-right font-mono text-xs">
+                                <a href="{{ path('admin_use_item_edit', {id: item.id}) }}" class="mr-3 text-teal hover:underline">Éditer</a>
+                                <form action="{{ path('admin_use_item_delete', {id: item.id}) }}" method="post" class="inline"
+                                      onsubmit="return confirm('Supprimer cet item ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete-use-item-' ~ item.id) }}">
+                                    <button type="submit" class="text-bronze-bright hover:underline">Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="px-4 py-4 text-center text-parchment-dim">Aucun item.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    {% else %}
+        <p class="text-center text-parchment-dim">Aucune catégorie pour le moment.</p>
+    {% endfor %}
+</div>
+{% endblock %}
