@@ -24,9 +24,10 @@
         <p class="mt-1 text-sm text-parchment-dim">{{ useCategoryCount }} catégorie{{ useCategoryCount > 1 ? 's' : '' }}</p>
     </a>
 
-    <div class="rounded-lg border border-parchment/10 bg-charcoal-800/30 p-5 opacity-50">
-        <h2 class="font-display text-lg font-semibold tracking-wide text-parchment">Blog</h2>
-        <p class="mt-1 text-sm text-parchment-dim">Bientôt — encore en Markdown</p>
-    </div>
+    <a href="{{ path('admin_blog_post_index') }}"
+       class="group rounded-lg border border-parchment/10 bg-charcoal-800/60 p-5 transition duration-300 ease-out hover:-translate-y-0.5 hover:border-teal/40 hover:shadow-lg hover:shadow-teal/10">
+        <h2 class="font-display text-lg font-semibold tracking-wide text-parchment group-hover:text-teal">Blog</h2>
+        <p class="mt-1 text-sm text-parchment-dim">{{ blogPostCount }} article{{ blogPostCount > 1 ? 's' : '' }}</p>
+    </a>
 </div>
 {% endblock %}

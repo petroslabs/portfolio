@@ -121,7 +121,17 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
   existant. Suppression d'une catégorie entraîne celle de ses items
   (`orphanRemoval`). `UsesController` (public) lit désormais
   `UseCategoryRepository`. Carte "L'établi" du tableau de bord admin activée.
-
+- CRUD Blog dans l'Admin (`/admin/blog`) : liste, création, édition,
+  suppression. Le Blog passe des fichiers Markdown (`content/blog/*.md`,
+  supprimés) à une table `blog_post` en base — `App\Entity\BlogPost`
+  (contenu Markdown brut stocké en base, converti en HTML à l'affichage via
+  `league/commonmark`, comme avant), migration Doctrine reprenant l'article
+  "Bienvenue au laboratoire". `App\Blog\BlogPostRepository` (la façade lue
+  par `BlogController`/`SitemapController`) garde exactement la même API
+  publique (`all()`/`find()`) — seule son implémentation interne change,
+  aucune modification nécessaire côté contrôleurs publics. Carte "Blog" du
+  tableau de bord admin activée : les quatre sections de contenu du site
+  sont désormais gérables depuis l'Admin.
 ### Modifié
 - Retrait du champ bannière du profil (`App\Entity\Profile`) : essayé avec
   une vraie image, pas concluant côté direction artistique — retiré de

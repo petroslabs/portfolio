@@ -1,0 +1,46 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Blog{% endblock %}
+
+{% block body %}
+<div class="mb-6 flex items-center justify-between">
+    <h1 class="font-display text-2xl font-bold text-parchment">Blog</h1>
+    <a href="{{ path('admin_blog_post_new') }}" class="rounded-lg bg-teal/90 px-3 py-1.5 font-mono text-xs font-medium text-charcoal hover:bg-teal">
+        + Nouvel article
+    </a>
+</div>
+
+<div class="overflow-x-auto rounded-lg border border-parchment/10">
+    <table class="w-full text-left text-sm">
+        <thead class="bg-charcoal-800 font-mono text-xs uppercase tracking-wide text-parchment-dim">
+            <tr>
+                <th class="px-4 py-3">Date</th>
+                <th class="px-4 py-3">Titre</th>
+                <th class="px-4 py-3">Slug</th>
+                <th class="px-4 py-3"></th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-parchment/10">
+            {% for post in posts %}
+                <tr>
+                    <td class="px-4 py-3 text-parchment-dim">{{ post.date|date('d.m.Y') }}</td>
+                    <td class="px-4 py-3 text-parchment">{{ post.titleFr }}</td>
+                    <td class="px-4 py-3 text-parchment-dim">{{ post.slug }}</td>
+                    <td class="px-4 py-3 text-right">
+                        <a href="{{ path('admin_blog_post_edit', {id: post.id}) }}" class="mr-3 text-teal hover:underline">Éditer</a>
+                        <form action="{{ path('admin_blog_post_delete', {id: post.id}) }}" method="post" class="inline"
+                              onsubmit="return confirm('Supprimer cet article ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-blog-post-' ~ post.id) }}">
+                            <button type="submit" class="text-bronze-bright hover:underline">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4" class="px-4 py-6 text-center text-parchment-dim">Aucun article pour le moment.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

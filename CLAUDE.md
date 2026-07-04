@@ -8,10 +8,9 @@ progressivement un blog, des projets et un espace admin.
 La **landing page (`/`)**, la **page Projets (`/projects`)**, **L'établi
 (`/uses`)** et le **blog (`/blog`)** sont implémentés, avec
 **internationalisation FR/EN**. L'**espace Admin (`/admin`)** couvre
-l'authentification, les Projets, le Hub et L'établi. Le Blog reste en
-Markdown pour l'instant — sa migration en base et son CRUD admin sont
-prévus pour une prochaine itération, ne pas les générer sans demande
-explicite.
+désormais tout le contenu du site : authentification, Projets, Hub, Établi
+et Blog. Toute nouvelle section de contenu (au-delà de ces quatre) est à ne
+générer que sur demande explicite.
 
 ## Direction artistique — à respecter impérativement
 
@@ -90,12 +89,11 @@ Le projet peut tourner dans l'infra Docker partagée `../symfony_env` (Traefik
   `App\Repository\UseCategoryRepository` (base de données — voir section
   Admin).
 - `src/Controller/BlogController.php` : routes `/blog` (liste) et
-  `/blog/{slug}` (article). Contenu via `App\Blog\BlogPostRepository`, qui
-  scanne `content/blog/{slug}.fr.md` / `.en.md` (frontmatter YAML +
-  Markdown), pas de base de données — ce choix est volontaire et temporaire,
-  passera en base quand l'espace Admin le couvrira ; ne pas anticiper cette
-  migration avant qu'elle soit demandée. Fallback FR si une traduction
-  manque, comme `|localized`.
+  `/blog/{slug}` (article). Contenu via `App\Blog\BlogPostRepository` — une
+  façade (namespace `App\Blog`, distinct de `App\Repository`) qui résout la
+  langue et convertit le Markdown en HTML, en s'appuyant en interne sur
+  `App\Repository\BlogPostRepository` (Doctrine, base de données). Fallback
+  FR si une traduction manque, comme `|localized`.
 - `templates/base.html.twig` : layout commun (polices, metas, fond, colonnes
   décoratives, switcher de langue).
 - `templates/home/index.html.twig` : la landing, étend `base.html.twig`.
@@ -154,8 +152,9 @@ Le projet peut tourner dans l'infra Docker partagée `../symfony_env` (Traefik
 
 ## Admin
 
-Espace `/admin`, en construction par itérations successives — voir "État
-actuel" pour la portée couverte à date.
+Espace `/admin` — couvre désormais tout le contenu du site (Projets, Hub,
+Établi, Blog). Toute nouvelle section de contenu future suivrait le même
+schéma (entité Doctrine + migration + CRUD + carte tableau de bord).
 
 - **Authentification** : `App\Entity\User` (Doctrine), formulaire de
   connexion classique (`symfony/security-bundle`, `form_login`), pas
@@ -173,10 +172,11 @@ actuel" pour la portée couverte à date.
   section de contenu, même si toutes ne sont pas encore actives — ne pas
   rediriger directement vers une section en particulier. Ajouter une
   nouvelle carte (active) dès qu'une section rejoint l'Admin.
-- **Migration YAML → base** : chaque type de contenu couvert par l'Admin
-  bascule de sa config YAML vers une entité Doctrine + migration (reprenant
-  les données existantes), au moment où son CRUD est développé — pas avant.
-  Projets, Hub et Établi faits, Blog à venir.
+- **Migration YAML/Markdown → base** : chaque type de contenu couvert par
+  l'Admin a basculé de sa config YAML (ou fichiers Markdown pour le Blog)
+  vers une entité Doctrine + migration (reprenant les données existantes),
+  au moment où son CRUD a été développé. Les quatre sections de contenu du
+  site sont maintenant en base — aucune ne reste en fichiers.
 - **Hub** : profil (`App\Entity\Profile`, singleton — une seule ligne,
   `/admin/profile` en édition seule, pas de create/delete) et liens
   (`App\Entity\HubLink`, `/admin/hub-links`, CRUD complet, champ `position`
@@ -189,6 +189,12 @@ actuel" pour la portée couverte à date.
   (`ManyToOne` vers sa catégorie), CRUD sur `/admin/uses`. Supprimer une
   catégorie supprime ses items (`cascade: ['remove'], orphanRemoval: true`)
   — comportement voulu, pas de confirmation supplémentaire à ajouter.
+- **Blog** : `App\Entity\BlogPost` (`src/Entity/`, table `blog_post` —
+  distinct de `App\Blog\BlogPost`, le DTO résolu pour le rendu), CRUD sur
+  `/admin/blog`. Le contenu Markdown reste stocké tel quel en base
+  (`contentFr`/`contentEn`), converti en HTML à l'affichage par
+  `App\Blog\BlogPostRepository` — même logique de rendu qu'avant la
+  migration, seule la source de lecture change (base plutôt que fichiers).
 - **CSRF en environnement de test/debug** : le projet utilise la protection
   CSRF *stateless* (`config/packages/csrf.yaml`,
   `framework.csrf_protection.stateless_token_ids`) — le token rendu dans le

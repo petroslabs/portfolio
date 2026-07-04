@@ -1,0 +1,30 @@
+{% extends 'admin/base.html.twig' %}
+
+{% form_theme form 'admin/_form_theme.html.twig' %}
+
+{% block title %}{{ post.id ? 'Éditer' : 'Nouvel' }} article{% endblock %}
+
+{% block body %}
+<h1 class="mb-6 font-display text-2xl font-bold text-parchment">
+    {{ post.id ? "Éditer l'article" : "Nouvel article" }}
+</h1>
+
+{{ form_start(form, {attr: {class: 'flex max-w-2xl flex-col gap-4'}}) }}
+    {{ form_row(form.slug) }}
+    {{ form_row(form.titleFr) }}
+    {{ form_row(form.titleEn) }}
+    {{ form_row(form.summaryFr) }}
+    {{ form_row(form.summaryEn) }}
+    {{ form_row(form.contentFr) }}
+    {{ form_row(form.contentEn) }}
+    {{ form_row(form.cover) }}
+    {{ form_row(form.date) }}
+
+    <div class="mt-2 flex items-center gap-3">
+        <button type="submit" class="rounded-lg bg-teal/90 px-4 py-2 font-mono text-sm font-medium text-charcoal hover:bg-teal">
+            Enregistrer
+        </button>
+        <a href="{{ path('admin_blog_post_index') }}" class="font-mono text-sm text-parchment-dim hover:text-parchment">Annuler</a>
+    </div>
+{{ form_end(form) }}
+{% endblock %}
