@@ -1,26 +1,21 @@
 services:
   app:
-    build: .
+    build:
+      context: .
+      target: frankenphp_prod
     container_name: petroslabs_app
     restart: unless-stopped
-    environment:
-      # Traefik termine déjà le TLS (mkcert en dev, Let's Encrypt en prod) :
-      # on désactive la gestion HTTPS automatique de Caddy en interne, sinon
-      # son port 80 ne fait que rediriger vers son propre 443 (boucle 308).
-      SERVER_NAME: ':80'
-    volumes:
-      - ./:/app
     networks:
       - symfony_env
     labels:
       - "traefik.enable=true"
       # HTTP → HTTPS
       - "traefik.http.routers.petroslabs-http.entrypoints=http"
-      - "traefik.http.routers.petroslabs-http.rule=Host(`petroslabs.localhost`)"
+      - "traefik.http.routers.petroslabs-http.rule=Host(`${APP_DOMAIN:-petroslabs.localhost}`)"
       - "traefik.http.routers.petroslabs-http.middlewares=https-redirect"
       # HTTPS
       - "traefik.http.routers.petroslabs.entrypoints=https"
-      - "traefik.http.routers.petroslabs.rule=Host(`petroslabs.localhost`)"
+      - "traefik.http.routers.petroslabs.rule=Host(`${APP_DOMAIN:-petroslabs.localhost}`)"
       - "traefik.http.routers.petroslabs.tls=true"
       - "traefik.http.services.petroslabs.loadbalancer.server.port=80"
 

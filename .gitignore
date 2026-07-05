@@ -21,3 +21,6 @@
 
 # IDE
 /.idea/
+
+# Docker Compose (variables locales/prod, cf. .env.docker.example)
+/.env.docker
