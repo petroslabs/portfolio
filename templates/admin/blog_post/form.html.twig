@@ -15,8 +15,21 @@
     {{ form_row(form.titleEn) }}
     {{ form_row(form.summaryFr) }}
     {{ form_row(form.summaryEn) }}
-    {{ form_row(form.contentFr) }}
-    {{ form_row(form.contentEn) }}
+
+    <div class="mb-1" data-controller="blog-editor">
+        {{ form_label(form.contentFr) }}
+        <div data-blog-editor-target="container" class="toastui-editor-dark overflow-hidden rounded-lg border border-parchment/10"></div>
+        {{ form_widget(form.contentFr, {attr: {'data-blog-editor-target': 'textarea'}}) }}
+        {{ form_errors(form.contentFr) }}
+    </div>
+
+    <div class="mb-1" data-controller="blog-editor">
+        {{ form_label(form.contentEn) }}
+        <div data-blog-editor-target="container" class="toastui-editor-dark overflow-hidden rounded-lg border border-parchment/10"></div>
+        {{ form_widget(form.contentEn, {attr: {'data-blog-editor-target': 'textarea'}}) }}
+        {{ form_errors(form.contentEn) }}
+    </div>
+
     {{ form_row(form.cover) }}
     {{ form_row(form.date) }}
 

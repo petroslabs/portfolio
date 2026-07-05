@@ -52,6 +52,9 @@ Polices (`@theme` → `fontFamily`) :
   longues chaînes de classes ou à de simples `{% include %}`.
 - **league/commonmark** pour le rendu des articles de blog (Markdown → HTML,
   pur PHP, pas de build JS).
+- **@toast-ui/editor** (via AssetMapper, `php bin/console importmap:require`,
+  aucun bundler npm ajouté) pour l'éditeur WYSIWYG des articles de blog dans
+  l'admin — voir section Admin.
 - Éviter le CSS vanilla hors nécessité stricte (keyframes, texture de fond) :
   privilégier les utilitaires Tailwind.
 
@@ -195,6 +198,10 @@ schéma (entité Doctrine + migration + CRUD + carte tableau de bord).
   (`contentFr`/`contentEn`), converti en HTML à l'affichage par
   `App\Blog\BlogPostRepository` — même logique de rendu qu'avant la
   migration, seule la source de lecture change (base plutôt que fichiers).
+  Édition via un éditeur WYSIWYG (Toast UI Editor, `assets/controllers/
+  blog_editor_controller.js`) qui synchronise le Markdown généré vers le
+  textarea du formulaire — le stockage reste du Markdown brut, aucun
+  changement de schéma/rendu pour ce choix d'éditeur.
 - **CSRF en environnement de test/debug** : le projet utilise la protection
   CSRF *stateless* (`config/packages/csrf.yaml`,
   `framework.csrf_protection.stateless_token_ids`) — le token rendu dans le

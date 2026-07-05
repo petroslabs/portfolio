@@ -132,6 +132,29 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
   aucune modification nécessaire côté contrôleurs publics. Carte "Blog" du
   tableau de bord admin activée : les quatre sections de contenu du site
   sont désormais gérables depuis l'Admin.
+- Éditeur WYSIWYG pour le contenu des articles de blog dans l'admin
+  (`/admin/blog/new`, `/edit`) : Toast UI Editor, ajouté via AssetMapper
+  (`importmap.php`) et un contrôleur Stimulus
+  (`assets/controllers/blog_editor_controller.js`) qui synchronise le
+  Markdown généré vers le champ réel du formulaire — `contentFr`/`contentEn`
+  restent stockés en Markdown brut en base, aucun changement de schéma ni
+  de rendu. Thème sombre officiel de l'éditeur, avec son accent bleu par
+  défaut réaligné sur le teal du site (`assets/styles/app.css`).
+
+### Corrigé
+- Rendu Markdown des articles de blog : `App\Blog\BlogPostRepository`
+  utilisait `CommonMarkConverter` (spec CommonMark de base), qui ne sait pas
+  interpréter la syntaxe GFM que génère l'éditeur WYSIWYG (tableaux, texte
+  barré, checkboxes/task-lists) — remplacé par
+  `GithubFlavoredMarkdownConverter` (même paquet `league/commonmark`, aucune
+  dépendance ajoutée).
+- `.prose-blog` (`assets/styles/app.css`) : styles manquants ou insuffisants
+  pour plusieurs éléments Markdown — titres `h1`/`h4` (seuls `h2`/`h3`
+  étaient stylés), séparateurs `<hr>`, citations (fond + marges), tableaux,
+  checkboxes de task-lists (puce native masquée, `accent-color` teal), et
+  contraste des blocs de code (fond distinct + bordure, au lieu de se fondre
+  avec le fond de la page).
+
 ### Modifié
 - Retrait du champ bannière du profil (`App\Entity\Profile`) : essayé avec
   une vraie image, pas concluant côté direction artistique — retiré de

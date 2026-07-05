@@ -6,7 +6,7 @@ namespace App\Blog;
 
 use App\Entity\BlogPost as BlogPostEntity;
 use App\Repository\BlogPostRepository as BlogPostEntityRepository;
-use League\CommonMark\CommonMarkConverter;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
 
 /**
  * Résout les articles de blog (App\Entity\BlogPost, en base — voir
@@ -14,15 +14,19 @@ use League\CommonMark\CommonMarkConverter;
  * fr ou en, conversion du Markdown en HTML. API publique (all/find)
  * inchangée depuis la version fichiers Markdown, pour ne rien casser côté
  * BlogController / SitemapController.
+ *
+ * GithubFlavoredMarkdownConverter (pas juste CommonMarkConverter) : l'éditeur
+ * WYSIWYG (Toast UI) génère de la syntaxe GFM (tableaux, texte barré,
+ * checkboxes/task-lists) que le CommonMark de base ne sait pas interpréter.
  */
 final class BlogPostRepository
 {
-    private readonly CommonMarkConverter $converter;
+    private readonly GithubFlavoredMarkdownConverter $converter;
 
     public function __construct(
         private readonly BlogPostEntityRepository $posts,
     ) {
-        $this->converter = new CommonMarkConverter();
+        $this->converter = new GithubFlavoredMarkdownConverter();
     }
 
     /**
