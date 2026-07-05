@@ -99,7 +99,7 @@
     /* Typographie du corps d'un article de blog (HTML généré depuis
        Markdown) : pas de classes utilitaires possibles sur ce contenu, d'où
        ce petit bloc CSS dédié plutôt qu'un plugin Tailwind. */
-    .prose-blog :where(h2, h3) {
+    .prose-blog :where(h1, h2, h3, h4) {
         margin-top: 2em;
         margin-bottom: 0.6em;
         font-family: var(--font-display);
@@ -108,8 +108,10 @@
         color: var(--color-parchment);
     }
 
+    .prose-blog h1 { font-size: 1.75rem; }
     .prose-blog h2 { font-size: 1.5rem; }
     .prose-blog h3 { font-size: 1.2rem; }
+    .prose-blog h4 { font-size: 1.05rem; }
 
     .prose-blog p { margin: 1.1em 0; }
 
@@ -123,6 +125,9 @@
         color: var(--color-teal-deep);
     }
 
+    .prose-blog strong { color: var(--color-parchment); }
+    .prose-blog del { color: var(--color-parchment-dim); opacity: 0.75; }
+
     .prose-blog ul, .prose-blog ol {
         margin: 1.1em 0;
         padding-left: 1.4em;
@@ -132,30 +137,100 @@
     .prose-blog ol { list-style: decimal; }
     .prose-blog li + li { margin-top: 0.4em; }
 
+    /* Task-lists GFM ("- [ ] …") : puce native masquée au profit de la case */
+    .prose-blog li:has(> input[type='checkbox']) {
+        list-style: none;
+        margin-left: -1.4em;
+    }
+
+    .prose-blog input[type='checkbox'] {
+        margin-right: 0.5em;
+        accent-color: var(--color-teal);
+    }
+
+    .prose-blog hr {
+        margin: 2.5em 0;
+        border: none;
+        border-top: 1px solid var(--color-parchment-dim);
+        opacity: 0.25;
+    }
+
     .prose-blog blockquote {
+        margin: 1.5em 0;
         border-left: 2px solid var(--color-bronze);
-        padding-left: 1em;
+        padding: 0.4em 1em;
+        background-color: var(--color-charcoal-800);
+        border-radius: 0 0.4em 0.4em 0;
         font-style: italic;
         color: var(--color-parchment-dim);
+    }
+
+    .prose-blog table {
+        width: 100%;
+        margin: 1.5em 0;
+        border-collapse: collapse;
+        font-size: 0.9em;
+    }
+
+    .prose-blog th, .prose-blog td {
+        border: 1px solid color-mix(in oklab, var(--color-parchment) 15%, transparent);
+        padding: 0.5em 0.8em;
+        text-align: left;
+    }
+
+    .prose-blog th {
+        font-family: var(--font-display);
+        font-weight: 600;
+        color: var(--color-bronze-bright);
+        background-color: var(--color-charcoal-800);
     }
 
     .prose-blog code {
         font-family: var(--font-mono);
         font-size: 0.85em;
-        background-color: var(--color-charcoal-800);
+        color: var(--color-teal);
+        background-color: var(--color-charcoal-700);
         padding: 0.15em 0.4em;
         border-radius: 0.3em;
     }
 
     .prose-blog pre {
         overflow-x: auto;
+        margin: 1.5em 0;
         padding: 1em;
         border-radius: 0.6em;
-        background-color: var(--color-charcoal-800);
+        border: 1px solid color-mix(in oklab, var(--color-parchment) 10%, transparent);
+        background-color: var(--color-charcoal-700);
     }
 
     .prose-blog pre code {
         padding: 0;
+        color: var(--color-parchment);
         background: none;
+    }
+
+    /* Éditeur WYSIWYG du blog (admin) : thème sombre officiel de Toast UI
+       Editor, avec son bleu d'accent (#67ccff) réaligné sur notre teal —
+       !important nécessaire pour surclasser la feuille de style tierce sans
+       dépendre de son ordre de chargement. */
+    .toastui-editor-dark .toastui-editor-defaultUI-toolbar .scroll-sync.active::before,
+    .toastui-editor-dark .toastui-editor-popup-add-image .toastui-editor-tabs .tab-item.active {
+        color: var(--color-teal) !important;
+        border-bottom-color: var(--color-teal) !important;
+    }
+
+    .toastui-editor-dark .toastui-editor-defaultUI-toolbar input:checked + .switch::before {
+        background-color: var(--color-teal) !important;
+    }
+
+    .toastui-editor-dark .toastui-editor-popup-body input[type='text']:focus,
+    .toastui-editor-dark table.ProseMirror-selectednode,
+    .toastui-editor-dark .html-block.ProseMirror-selectednode {
+        outline-color: var(--color-teal) !important;
+    }
+
+    .toastui-editor-dark.toastui-editor-defaultUI .toastui-editor-ok-button {
+        color: var(--color-charcoal) !important;
+        background-color: var(--color-teal) !important;
     }
 }

@@ -161,6 +161,10 @@ public/robots.txt             # Autorise l'indexation, référence le sitemap
   résout l'article pour la langue courante et fait la conversion Markdown →
   HTML ; c'est cette façade que lisent `BlogController` et
   `SitemapController`.
+- Édition via un éditeur WYSIWYG ([Toast UI Editor](https://ui.toast.com/tui-editor)),
+  ajouté via AssetMapper (`assets/controllers/blog_editor_controller.js`,
+  Stimulus). Il édite visuellement mais synchronise en continu le Markdown
+  généré vers le champ réel du formulaire — le stockage reste inchangé.
 
 ## Admin
 
