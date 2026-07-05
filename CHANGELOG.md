@@ -186,3 +186,20 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 - Layout admin (`templates/admin/base.html.twig`) : aucun moyen de revenir
   au site public depuis `/admin/login` — un lien "← Retour au site" est
   désormais toujours visible.
+
+### Modifié
+- `Dockerfile` passé en multi-stage (`frankenphp_prod` / `frankenphp_dev`) :
+  la prod intègre désormais le code, les dépendances Composer et les assets
+  compilés (Tailwind + `asset-map:compile`) directement dans l'image au
+  build, exécutée en utilisateur non-root (`www-data`), plutôt que de
+  s'appuyer sur le bind-mount du code hôte utilisé en dev. Ajout du binaire
+  `composer` (absent de l'image `dunglas/frankenphp` de base), requis par
+  les deux stages.
+- `compose.yaml`/`compose.override.yaml`/`compose.prod.yaml` : le bind-mount
+  et le stage dev vivent désormais dans `compose.override.yaml` (auto-chargé
+  en local), `compose.yaml` restant prod-safe par défaut. Domaine Traefik
+  paramétré via `${APP_DOMAIN}` (`.env.docker`, cf. `.env.docker.example`)
+  au lieu de `petroslabs.localhost` en dur.
+- `Makefile` : nouvelles cibles `build-prod`/`up-prod`/`down-prod`/
+  `logs-prod`/`migrate-prod`/`deploy-prod` pour le déploiement en
+  production sur le VPS (build → migrations → démarrage).

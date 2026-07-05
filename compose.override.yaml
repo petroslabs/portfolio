@@ -1,0 +1,9 @@
+# Chargé automatiquement par `docker compose` (sans -f) : bascule le service
+# sur le stage de dev (pas de code intégré à l'image) et monte le code de
+# l'hôte pour le hot-reload, sans rebuild à chaque changement.
+services:
+  app:
+    build:
+      target: frankenphp_dev
+    volumes:
+      - ./:/app

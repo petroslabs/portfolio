@@ -58,28 +58,48 @@ Polices (`@theme` → `fontFamily`) :
 - Éviter le CSS vanilla hors nécessité stricte (keyframes, texture de fond) :
   privilégier les utilitaires Tailwind.
 
-## Infrastructure Docker locale
+## Infrastructure Docker (dev et prod, infra partagée `../symfony_env`)
 
-Le projet peut tourner dans l'infra Docker partagée `../symfony_env` (Traefik
-+ PostgreSQL + Redis + Mailpit, commune à plusieurs projets Symfony) :
-- `Dockerfile` : image `dunglas/frankenphp:php8.4` + extension `pdo_pgsql`
-  (absente de l'image de base, requise par `doctrine/doctrine-bundle`).
-- `compose.yaml` : service `app` unique, rejoint le réseau externe
-  `symfony_env`, labels Traefik pour `petroslabs.localhost`. `SERVER_NAME=:80`
+Le projet tourne dans l'infra Docker partagée `../symfony_env` (Traefik +
+PostgreSQL + Redis + Mailpit, commune à plusieurs projets Symfony), aussi
+bien en dev qu'en prod sur le VPS :
+- `Dockerfile` multi-stage : base commune (`pdo_pgsql`/`opcache`, `composer`
+  copié depuis l'image officielle — absent de l'image `dunglas/frankenphp`
+  de base), puis `frankenphp_prod` (code + `composer install --no-dev` +
+  assets compilés — Tailwind minifié, `asset-map:compile` — intégrés à
+  l'image au build, exécution en `www-data` non-root) et `frankenphp_dev`
+  (image outillage seule, code fourni par bind-mount). `SERVER_NAME=:80`
   désactive la gestion HTTPS automatique de Caddy (Traefik termine déjà le
-  TLS) — sans ça, le port 80 interne ne fait que rediriger vers son propre 443.
+  TLS) — sans ça, le port 80 interne ne fait que rediriger vers son propre
+  443.
+- `compose.yaml` : service `app`, cible `frankenphp_prod` par défaut, réseau
+  externe `symfony_env`, labels Traefik templatés sur
+  `${APP_DOMAIN:-petroslabs.localhost}`. `compose.override.yaml` (auto-chargé
+  par un `docker compose` sans `-f`, donc actif en dev local) bascule sur
+  `frankenphp_dev` et ajoute le bind-mount `./:/app`. `compose.prod.yaml`
+  (à combiner explicitement, `-f compose.yaml -f compose.prod.yaml` —
+  ce qui désactive l'auto-chargement de `compose.override.yaml`) ajoute des
+  limites de ressources et injecte `.env.local` comme variables
+  d'environnement du conteneur (`env_file:`) puisque le stage prod n'a plus
+  de bind-mount pour que le dotenv de Symfony le lise depuis le disque.
 - `.env.local` (non versionné) pointe `DATABASE_URL`/`REDIS_URL`/`MAILER_DSN`
   vers les services partagés (`symfony_env_postgresql`, `symfony_env_redis`,
-  `symfony_env_mailpit`) — voir le README pour le détail.
+  `symfony_env_mailpit` en dev ; vraies valeurs en prod) — voir le README
+  pour le détail. `.env.docker` (non versionné, cf. `.env.docker.example`)
+  porte `APP_DOMAIN` pour Docker Compose — distinct du `.env`/`.env.local`
+  de Symfony, pour ne pas mélanger les deux mécanismes de variables.
 - Limitation connue de `symfony_env` : son `docker-proxy` n'a pas la
   permission `EVENTS`, donc Traefik ne détecte pas à chaud la
   création/recréation du conteneur `petroslabs_app` — un
-  `docker compose restart traefik` (depuis `symfony_env`) est nécessaire
-  après chaque `docker compose up`/`--build` de ce projet.
+  `docker compose restart traefik` (depuis `symfony_env`, `make
+  traefik-restart` depuis ce projet) est nécessaire après chaque démarrage
+  ou rebuild, dev comme prod.
 - `trusted_proxies` (`config/packages/framework.yaml`) : nécessaire pour que
   Symfony sache qu'il est servi en HTTPS derrière Traefik (sinon URLs
   canoniques/SEO en `http://` et validation CSRF cassée — voir `security.csrf
   stateless_token_ids` ci-dessous). Ne pas retirer.
+- Déploiement prod : `make deploy-prod` (build → migrations Doctrine → up)
+  depuis le dossier du projet cloné sur le VPS — détail dans le README.
 
 ## Architecture
 

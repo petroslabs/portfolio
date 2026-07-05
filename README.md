@@ -83,14 +83,19 @@ make build
 make up
 ```
 
-Le site est alors accessible sur https://petroslabs.localhost.
+Le site est alors accessible sur https://petroslabs.localhost (domaine par
+défaut si `APP_DOMAIN` n'est pas défini — inutile de créer un `.env.docker`
+en local, seule la production a besoin d'un vrai domaine).
 
 > ⚠️ Le `docker-proxy` de `symfony_env` n'a pas la permission `EVENTS` : Traefik
 > ne détecte pas à chaud la création/recréation du conteneur `petroslabs_app`.
 > Après un `make build`/`up`, relancer Traefik une fois : `make traefik-restart`.
 
-Le `Dockerfile` ajoute `pdo_pgsql` à l'image `dunglas/frankenphp:php8.4` (absent
-par défaut), nécessaire pour la connexion PostgreSQL de `doctrine/doctrine-bundle`.
+Le `Dockerfile` est multi-stage : le stage `frankenphp_dev` (utilisé ici via
+`compose.override.yaml`, auto-chargé en local) ajoute `pdo_pgsql`/`opcache`
+et `composer` à l'image `dunglas/frankenphp:php8.4`, le code venant du
+bind-mount de l'hôte pour le hot-reload. Le stage `frankenphp_prod` est
+décrit dans la section Production ci-dessous.
 
 `trusted_proxies` (`config/packages/framework.yaml`) fait confiance à Traefik
 comme proxy immédiat — sans ça, Symfony croit être servi en HTTP (le
@@ -102,18 +107,85 @@ Autres commandes : `make ps` / `make logs` / `make sh` (shell dans le
 conteneur) / `make console cmd="..."` (bin/console dans le conteneur) /
 `make db-drop`.
 
-## Build de production
+## Déploiement en production (VPS, infra `symfony_env`)
+
+Le stage `frankenphp_prod` du `Dockerfile` intègre le code, les dépendances
+Composer (`--no-dev`) et les assets compilés (Tailwind minifié +
+`asset-map:compile`) directement dans l'image au build — pas de bind-mount,
+exécution en utilisateur non-root (`www-data`). `compose.yaml` seul (sans
+`compose.override.yaml`, qui bascule sur le stage dev) est donc déjà
+prod-safe par défaut ; `compose.prod.yaml` ajoute les limites de ressources
+et injecte `.env.local` (non versionné, présent sur le VPS mais jamais copié
+dans l'image) comme variables d'environnement du conteneur.
+
+### Prérequis
+
+- `symfony_env` déjà déployé **en mode production** sur le VPS (domaine
+  réel, Let's Encrypt, réseau Docker `symfony_env` créé) — voir son propre
+  README, section Production. Ce projet ne fait que rejoindre ce réseau, il
+  ne démarre pas l'infra partagée.
+- Un sous-domaine DNS (ex. `petroslabs.dev`) qui pointe vers l'IP du VPS.
+
+### Premier déploiement
 
 ```bash
-make tailwind-build
+# Sur le VPS
+git clone <url-du-repo> portfolio
+cd portfolio
+
+# 1. Créer la base dédiée (une fois, depuis symfony_env)
+cd ../symfony_env && make db-create name=petroslabs
+cd ../portfolio
+
+# 2. .env.local (non versionné) avec les vraies valeurs
+#    DATABASE_URL="postgresql://<user>:<mdp affiché par db-create>@symfony_env_postgresql:5432/petroslabs?serverVersion=17&charset=utf8"
+#    REDIS_URL="redis://:<REDIS_PASSWORD>@symfony_env_redis:6379"
+#    MAILER_DSN="<vrai SMTP>"
+#    APP_SECRET=<valeur forte, ex: openssl rand -hex 16>
+
+# 3. .env.docker (non versionné, copié depuis .env.docker.example) avec le vrai domaine
+cp .env.docker.example .env.docker
+#    APP_DOMAIN=petroslabs.dev
+
+# 4. Build → migrations → démarrage
+make deploy-prod
+
+# 5. Premier démarrage : Traefik ne détecte pas le nouveau conteneur à chaud
+#    (limitation docker-proxy de symfony_env, cf. plus bas)
+make traefik-restart
+
+# 6. Créer le compte admin
+make console cmd="app:create-admin"
 ```
+
+Le site est alors accessible sur `https://<APP_DOMAIN>`.
+
+### Déploiements suivants
+
+```bash
+git pull
+make deploy-prod   # build (nouvelle image) → migrations → redémarrage du conteneur
+```
+
+`make traefik-restart` n'est nécessaire qu'à la création/recréation du
+conteneur (rare en usage normal, `deploy-prod` recrée le conteneur à chaque
+fois via `up-prod` — le lancer par précaution si le site ne répond pas juste
+après un déploiement).
+
+### Autres commandes
+
+`make build-prod` / `make up-prod` / `make down-prod` / `make logs-prod` /
+`make migrate-prod` (déploiement étape par étape plutôt que
+`make deploy-prod`).
 
 ## Structure
 
 ```
-Makefile                       # Commandes de dev/build/Docker (make help)
-Dockerfile                    # Image dev pour l'infra symfony_env (frankenphp + pdo_pgsql)
-compose.yaml                  # Service app + intégration Traefik (réseau symfony_env)
+Makefile                       # Commandes de dev/build/Docker/prod (make help)
+Dockerfile                    # Image multi-stage (frankenphp_prod / frankenphp_dev)
+compose.yaml                  # Service app (prod par défaut) + intégration Traefik
+compose.override.yaml         # Overrides dev (auto-chargés) : stage dev + bind-mount du code
+compose.prod.yaml             # Overrides production : limites de ressources + injection .env.local
 migrations/                   # Migrations Doctrine (schéma + données reprises des YAML/Markdown supprimés)
 src/Blog/                     # BlogPost (DTO résolu), BlogPostRepository (résout langue + Markdown→HTML, lit la base)
 src/Command/                   # CreateAdminCommand (app:create-admin)
