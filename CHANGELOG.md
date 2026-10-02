@@ -160,10 +160,13 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 - Bascule de la production effectuée : `petroslabs.dev` tourne sur son
   PostgreSQL embarqué (base recréée à vide, entièrement reconstituée par les
   migrations — aucune donnée de l'ancienne base partagée reprise, décision
-  assumée). Le VPS hébergeant déjà `symfony_env` en production pour un autre
-  projet (MécaTips), `infra` n'y a volontairement pas été déployé :
-  `PROXY_NETWORK=symfony_env` réutilise son Traefik existant, seul le
-  PostgreSQL partagé est quitté.
+  assumée).
+- `symfony_env` (infra Docker partagée historique : Traefik + PostgreSQL +
+  Redis, servait aussi MécaTips) entièrement démantelée sur le VPS —
+  conteneurs, réseaux et volumes supprimés, MécaTips hors ligne (décision
+  assumée). [`petroslabs/infra`](https://github.com/petroslabs/infra)
+  déployé en production à la place (`PROXY_NETWORK=edge`), certificat Let's
+  Encrypt obtenu automatiquement.
 
 ### Corrigé
 - Rendu Markdown des articles de blog : `App\Blog\BlogPostRepository`
