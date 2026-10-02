@@ -25,6 +25,10 @@ security:
             logout:
                 path: admin_logout
                 target: app_home
+            # Un seul compte admin : aucune raison de laisser un nombre
+            # illimité de tentatives de mot de passe.
+            login_throttling:
+                max_attempts: 5
 
     # Note: Only the *first* matching rule is applied
     access_control:

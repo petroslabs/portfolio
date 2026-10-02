@@ -1,0 +1,46 @@
+nelmio_security:
+    # prevents framing of the entire site
+    clickjacking:
+        paths:
+            '^/.*': DENY
+
+    # disables content type sniffing for script resources
+    content_type:
+        nosniff: true
+
+    # Send a full URL in the `Referer` header when performing a same-origin request,
+    # only send the origin of the document to secure destination (HTTPS->HTTPS),
+    # and send no header to a less secure destination (HTTPS->HTTP).
+    # If `strict-origin-when-cross-origin` is not supported, use `no-referrer` policy,
+    # no referrer information is sent along with requests.
+    referrer_policy:
+        enabled: true
+        policies:
+            - 'no-referrer'
+            - 'strict-origin-when-cross-origin'
+
+when@prod:
+    nelmio_security:
+        # CSP et HSTS en prod uniquement : le hot-reload de dev charge des
+        # scripts depuis cdn.jsdelivr.net (voir base.html.twig), qu'une CSP
+        # stricte casserait.
+        csp:
+            enabled: true
+            enforce:
+                default-src: ["'self'"]
+                script-src: ["'self'"]
+                style-src: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com']
+                font-src: ["'self'", 'https://fonts.gstatic.com']
+                img-src: ["'self'", 'data:']
+                connect-src: ["'self'"]
+                object-src: ["'none'"]
+                base-uri: ["'self'"]
+                frame-ancestors: ["'none'"]
+                form-action: ["'self'"]
+
+        # Let's Encrypt via infra/ termine déjà le TLS et Traefik redirige
+        # HTTP → HTTPS : ce bloc n'ajoute que l'en-tête HSTS, le redirect
+        # interne ne se déclenche jamais (la requête arrive déjà en HTTPS).
+        forced_ssl:
+            hsts_max_age: 31536000
+            hsts_subdomains: true
