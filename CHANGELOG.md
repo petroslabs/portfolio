@@ -140,6 +140,10 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
   restent stockés en Markdown brut en base, aucun changement de schéma ni
   de rendu. Thème sombre officiel de l'éditeur, avec son accent bleu par
   défaut réaligné sur le teal du site (`assets/styles/app.css`).
+- Projet SymAgri ajouté à `/projects` : SaaS pour les entreprises de travaux
+  agricoles (ETA), en cours de développement, destiné à la commercialisation.
+  Pas de dépôt public (`repo_url` à `NULL`), `demo_url` vers la vitrine
+  commerciale (`symagri.fr`).
 
 ### Corrigé
 - Rendu Markdown des articles de blog : `App\Blog\BlogPostRepository`
