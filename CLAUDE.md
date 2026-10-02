@@ -58,11 +58,16 @@ Polices (`@theme` → `fontFamily`) :
 - Éviter le CSS vanilla hors nécessité stricte (keyframes, texture de fond) :
   privilégier les utilitaires Tailwind.
 
-## Infrastructure Docker (dev et prod, infra partagée `../symfony_env`)
+## Infrastructure Docker (dev et prod, projet autonome)
 
-Le projet tourne dans l'infra Docker partagée `../symfony_env` (Traefik +
-PostgreSQL + Redis + Mailpit, commune à plusieurs projets Symfony), aussi
-bien en dev qu'en prod sur le VPS :
+Le projet est autonome : il embarque sa propre base PostgreSQL et ne dépend
+d'aucun autre dépôt applicatif. Seul le reverse proxy reste une propriété de
+l'hôte — un proxy possède les ports 80/443 et ne peut en exister qu'un par
+machine — fourni par le dépôt partagé **https://github.com/petroslabs/infra**
+(Traefik + docker-proxy, rien d'autre : pas de base de données ni de
+service mutualisés). Historique : le projet dépendait auparavant de l'infra
+partagée `symfony_env` (Traefik + PostgreSQL + Redis + Mailpit communs à
+plusieurs projets) — démantelée au profit de ce découplage.
 - `Dockerfile` multi-stage : base commune (`pdo_pgsql`/`opcache`, `composer`
   copié depuis l'image officielle — absent de l'image `dunglas/frankenphp`
   de base), puis `frankenphp_prod` (code + `composer install --no-dev` +
@@ -72,34 +77,40 @@ bien en dev qu'en prod sur le VPS :
   désactive la gestion HTTPS automatique de Caddy (Traefik termine déjà le
   TLS) — sans ça, le port 80 interne ne fait que rediriger vers son propre
   443.
-- `compose.yaml` : service `app`, cible `frankenphp_prod` par défaut, réseau
-  externe `symfony_env`, labels Traefik templatés sur
-  `${APP_DOMAIN:-petroslabs.localhost}`. `compose.override.yaml` (auto-chargé
-  par un `docker compose` sans `-f`, donc actif en dev local) bascule sur
-  `frankenphp_dev` et ajoute le bind-mount `./:/app`. `compose.prod.yaml`
-  (à combiner explicitement, `-f compose.yaml -f compose.prod.yaml` —
-  ce qui désactive l'auto-chargement de `compose.override.yaml`) ajoute des
-  limites de ressources et injecte `.env.local` comme variables
+- `compose.yaml` : service `app` (cible `frankenphp_prod` par défaut) +
+  service `database` (PostgreSQL embarqué, `postgres:16-alpine`, volume
+  nommé `database_data`, healthcheck — l'app attend `service_healthy` avant
+  de démarrer). L'app rejoint un réseau interne (`default`, app + base,
+  cloisonné par projet) et un réseau externe `proxy` (nom paramétrable via
+  `PROXY_NETWORK`, `edge` par défaut — celui que possède le dépôt `infra`).
+  Labels Traefik templatés sur `${APP_DOMAIN:-petroslabs.localhost}`, sans
+  `certresolver` (ajouté par `compose.prod.yaml` seulement — le dev s'appuie
+  sur les certificats mkcert de `infra`). `compose.override.yaml`
+  (auto-chargé par un `docker compose` sans `-f`, donc actif en dev local)
+  bascule l'app sur `frankenphp_dev` avec bind-mount `./:/app`, et publie le
+  port de `database` sur `127.0.0.1` pour les clients SQL locaux.
+  `compose.prod.yaml` (à combiner explicitement, `-f compose.yaml -f
+  compose.prod.yaml` — ce qui désactive l'auto-chargement de
+  `compose.override.yaml`) ajoute le label `certresolver=letsencrypt`, des
+  limites de ressources, et injecte `.env.local` comme variables
   d'environnement du conteneur (`env_file:`) puisque le stage prod n'a plus
   de bind-mount pour que le dotenv de Symfony le lise depuis le disque.
-- `.env.local` (non versionné) pointe `DATABASE_URL`/`REDIS_URL`/`MAILER_DSN`
-  vers les services partagés (`symfony_env_postgresql`, `symfony_env_redis`,
-  `symfony_env_mailpit` en dev ; vraies valeurs en prod) — voir le README
-  pour le détail. `.env.docker` (non versionné, cf. `.env.docker.example`)
-  porte `APP_DOMAIN` pour Docker Compose — distinct du `.env`/`.env.local`
-  de Symfony, pour ne pas mélanger les deux mécanismes de variables.
-- Limitation connue de `symfony_env` : son `docker-proxy` n'a pas la
-  permission `EVENTS`, donc Traefik ne détecte pas à chaud la
-  création/recréation du conteneur `petroslabs_app` — un
-  `docker compose restart traefik` (depuis `symfony_env`, `make
-  traefik-restart` depuis ce projet) est nécessaire après chaque démarrage
-  ou rebuild, dev comme prod.
+- `DATABASE_URL` est fixé directement dans `compose.yaml` (`environment:`),
+  construit depuis `DB_USER`/`DB_PASSWORD`/`DB_NAME` (défauts de dev
+  `app`/`!ChangeMe!`/`app`, à écraser en prod via `.env.docker`) — il prend
+  le pas sur toute valeur lue depuis `.env.local`, puisque la base n'est plus
+  un secret externe mais une ressource du projet. `.env.docker` (non
+  versionné, cf. `.env.docker.example`) porte aussi `APP_DOMAIN` et
+  `PROXY_NETWORK` pour Docker Compose — distinct du `.env`/`.env.local` de
+  Symfony, pour ne pas mélanger les deux mécanismes de variables.
 - `trusted_proxies` (`config/packages/framework.yaml`) : nécessaire pour que
   Symfony sache qu'il est servi en HTTPS derrière Traefik (sinon URLs
   canoniques/SEO en `http://` et validation CSRF cassée — voir `security.csrf
   stateless_token_ids` ci-dessous). Ne pas retirer.
 - Déploiement prod : `make deploy-prod` (build → migrations Doctrine → up)
-  depuis le dossier du projet cloné sur le VPS — détail dans le README.
+  depuis le dossier du projet cloné sur le VPS, une fois le dépôt `infra`
+  déployé sur la même machine (`make up-prod` depuis son propre dossier) —
+  détail dans le README.
 
 ## Architecture
 

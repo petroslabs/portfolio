@@ -5,21 +5,68 @@ services:
       target: frankenphp_prod
     container_name: petroslabs_app
     restart: unless-stopped
+    environment:
+      # La base appartient au projet (service `database` ci-dessous), elle ne
+      # vit plus dans la pile mutualisée symfony_env. Valeurs de dev par
+      # défaut, à écraser en prod via .env.docker (DB_USER/DB_PASSWORD/DB_NAME).
+      DATABASE_URL: "postgresql://${DB_USER:-app}:${DB_PASSWORD:-!ChangeMe!}@database:5432/${DB_NAME:-app}?serverVersion=16&charset=utf8"
+    depends_on:
+      # `service_healthy` et non `service_started` : PostgreSQL accepte les
+      # connexions bien après le démarrage du conteneur.
+      database:
+        condition: service_healthy
     networks:
-      - symfony_env
+      - default
+      - proxy
     labels:
       - "traefik.enable=true"
       # HTTP → HTTPS
       - "traefik.http.routers.petroslabs-http.entrypoints=http"
       - "traefik.http.routers.petroslabs-http.rule=Host(`${APP_DOMAIN:-petroslabs.localhost}`)"
       - "traefik.http.routers.petroslabs-http.middlewares=https-redirect"
-      # HTTPS
+      # HTTPS — certresolver ajouté par compose.prod.yaml (pas de Let's
+      # Encrypt en dev, les certificats mkcert de infra/ suffisent).
       - "traefik.http.routers.petroslabs.entrypoints=https"
       - "traefik.http.routers.petroslabs.rule=Host(`${APP_DOMAIN:-petroslabs.localhost}`)"
       - "traefik.http.routers.petroslabs.tls=true"
-      - "traefik.http.routers.petroslabs.tls.certresolver=letsencrypt"
       - "traefik.http.services.petroslabs.loadbalancer.server.port=80"
 
+  # PostgreSQL — la base appartient au projet. Elle vivait dans la pile
+  # mutualisée symfony_env (Postgres/Redis/Mailpit partagés entre projets) ;
+  # c'est précisément cette dépendance qu'on démonte, projet par projet. Le
+  # reverse proxy, lui, reste partagé — voir https://github.com/petroslabs/infra.
+  database:
+    image: postgres:16-alpine
+    container_name: petroslabs_database
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-app}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-!ChangeMe!}
+      POSTGRES_DB: ${DB_NAME:-app}
+    volumes:
+      - database_data:/var/lib/postgresql/data
+    # Aucun port publié ici (donc aucun en prod) : rien hors du réseau du
+    # projet n'a à joindre la base. Le développement fait exception et le
+    # publie sur 127.0.0.1 — voir compose.override.yaml.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-app} -d ${DB_NAME:-app}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - default
+
+volumes:
+  database_data:
+
 networks:
-  symfony_env:
+  # Réseau interne du projet (app + database), créé par Compose, cloisonné
+  # par projet.
+  default:
+
+  # Réseau du reverse proxy partagé. Externe et paramétrable : PROXY_NETWORK
+  # pointe vers le réseau `edge` qu'un seul dépôt infra possède sur l'hôte —
+  # voir https://github.com/petroslabs/infra.
+  proxy:
     external: true
+    name: ${PROXY_NETWORK:-edge}

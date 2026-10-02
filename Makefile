@@ -50,9 +50,11 @@ lint: ## Vérifier la syntaxe des templates Twig et des fichiers YAML
 test: ## Lancer la suite de tests PHPUnit
 	php bin/phpunit
 
-## —— Docker (infra symfony_env, dev) ——————————————————————————————————————————
+## —— Docker (dev) ————————————————————————————————————————————————————————————
 # compose.override.yaml (stage dev + bind-mount) est auto-chargé tant qu'on
-# ne passe pas -f explicitement — voir la section Production plus bas.
+# ne passe pas -f explicitement — voir la section Production plus bas. Le
+# projet embarque sa propre base (service `database`) ; seul le reverse proxy
+# est partagé entre projets — voir https://github.com/petroslabs/infra.
 
 DOCKER_COMP = docker compose
 
@@ -91,19 +93,11 @@ console: ## Exécuter une commande bin/console dans le conteneur (usage : make c
 	fi
 	$(DOCKER_COMP) exec app php bin/console $(cmd)
 
-.PHONY: traefik-restart
-traefik-restart: ## Relancer Traefik (symfony_env) après un up/build — le docker-proxy partagé n'a pas la permission EVENTS
-	cd ../symfony_env && docker compose restart traefik
+## —— Base de données (PostgreSQL embarqué) ————————————————————————————————————
 
-## —— Base de données (PostgreSQL partagé, symfony_env) ————————————————————————
-
-.PHONY: db-create
-db-create: ## Créer la base 'petroslabs' sur le PostgreSQL partagé
-	cd ../symfony_env && $(MAKE) db-create name=petroslabs
-
-.PHONY: db-drop
-db-drop: ## Supprimer la base 'petroslabs' sur le PostgreSQL partagé
-	cd ../symfony_env && $(MAKE) db-drop name=petroslabs
+.PHONY: db-shell
+db-shell: ## Ouvrir un psql sur la base du projet
+	$(DOCKER_COMP) exec database psql -U $${DB_USER:-app} -d $${DB_NAME:-app}
 
 ## —— Docker (production, VPS) —————————————————————————————————————————————————
 # Les -f explicites désactivent l'auto-chargement de compose.override.yaml

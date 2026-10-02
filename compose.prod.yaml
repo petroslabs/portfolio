@@ -9,6 +9,11 @@ services:
     # place (fichier non versionné, jamais copié dans l'image).
     env_file:
       - .env.local
+    labels:
+      # Let's Encrypt via le certResolver de Traefik, uniquement en prod — le
+      # dev s'appuie sur les certificats mkcert du reverse proxy partagé
+      # (https://github.com/petroslabs/infra).
+      - "traefik.http.routers.petroslabs.tls.certresolver=letsencrypt"
     deploy:
       resources:
         limits:
