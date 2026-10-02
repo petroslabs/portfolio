@@ -11,7 +11,9 @@ projects:
     meta_title: 'Projets — PetrosLabs'
     meta_description: "La vitrine des projets de PetrosLabs — ce qui s'est construit dans l'atelier."
     code: 'Code'
-    demo: 'Démo'
+    demo: 'Aperçu'
+    pinned: 'Épinglé'
+    back: 'les projets'
 
 uses:
     title: "L'établi"

@@ -17,6 +17,7 @@
                 <th class="px-4 py-3">Position</th>
                 <th class="px-4 py-3">Nom</th>
                 <th class="px-4 py-3">Statut</th>
+                <th class="px-4 py-3">Épinglé</th>
                 <th class="px-4 py-3"></th>
             </tr>
         </thead>
@@ -26,6 +27,7 @@
                     <td class="px-4 py-3 text-parchment-dim">{{ project.position }}</td>
                     <td class="px-4 py-3 text-parchment">{{ project.name }}</td>
                     <td class="px-4 py-3 text-parchment-dim">{{ ('status.' ~ project.status)|trans }}</td>
+                    <td class="px-4 py-3 text-parchment-dim">{{ project.pinned ? '★' : '' }}</td>
                     <td class="px-4 py-3 text-right">
                         <a href="{{ path('admin_project_edit', {id: project.id}) }}" class="mr-3 text-teal hover:underline">Éditer</a>
                         <form action="{{ path('admin_project_delete', {id: project.id}) }}" method="post" class="inline"
@@ -37,7 +39,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="4" class="px-4 py-6 text-center text-parchment-dim">Aucun projet pour le moment.</td>
+                    <td colspan="5" class="px-4 py-6 text-center text-parchment-dim">Aucun projet pour le moment.</td>
                 </tr>
             {% endfor %}
         </tbody>

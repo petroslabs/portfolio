@@ -11,7 +11,9 @@ projects:
     meta_title: 'Projects — PetrosLabs'
     meta_description: 'The showcase of PetrosLabs projects — what has been built in the workshop.'
     code: 'Code'
-    demo: 'Demo'
+    demo: 'Preview'
+    pinned: 'Pinned'
+    back: 'projects'
 
 uses:
     title: 'The Workbench'

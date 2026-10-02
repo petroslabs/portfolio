@@ -24,8 +24,14 @@ final class ProjectRepository extends ServiceEntityRepository
     public function findAllOrdered(): array
     {
         return $this->createQueryBuilder('p')
-            ->orderBy('p.position', 'ASC')
+            ->orderBy('p.pinned', 'DESC')
+            ->addOrderBy('p.position', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    public function findOneBySlug(string $slug): ?Project
+    {
+        return $this->findOneBy(['slug' => $slug]);
     }
 }
