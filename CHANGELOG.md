@@ -253,3 +253,13 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
   bordure, plus visibles qu'un simple lien texte). Libellé « Démo » renommé
   « Aperçu » (FR) / « Preview » (EN) — plus juste pour un lien qui pointe
   vers un site déjà en ligne plutôt qu'une démo interactive.
+
+### Modifié
+- Projet « Symfony Env » remplacé par « Infra » sur `/projects` (même
+  position, même image) : le dépôt a été démantelé au profit de
+  [`petroslabs/infra`](https://github.com/petroslabs/infra), le reverse
+  proxy minimal qui l'a remplacé en production.
+- Contenu détail étoffé pour PetrosLabs, Loto Quine et SymAgri (jusqu'ici une
+  simple copie du résumé court) — plusieurs paragraphes par projet,
+  cohérent avec Infra. SymAgri reste volontairement sobre côté technique
+  (fermé source, destiné à la vente).
