@@ -30,13 +30,12 @@
             {% for project in projects %}
                 <li class="animate-rise" style="animation-delay: {{ 80 + loop.index0 * 60 }}ms">
                     <twig:ProjectCard
+                        slug="{{ project.slug }}"
                         :name="project.name"
-                        :summary="project.summary"
                         image="{{ project.image }}"
                         :stack="project.stack"
                         status="{{ project.status }}"
-                        repo_url="{{ project.repoUrl }}"
-                        demo_url="{{ project.demoUrl }}"
+                        :pinned="project.pinned"
                     />
                 </li>
             {% endfor %}

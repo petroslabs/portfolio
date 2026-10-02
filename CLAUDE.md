@@ -122,8 +122,12 @@ plusieurs projets) — démantelée au profit de ce découplage.
 - `src/Controller/HomeController.php` : route `/`, contenu via
   `App\Repository\ProfileRepository`/`HubLinkRepository` (base de données —
   voir section Admin).
-- `src/Controller/ProjectController.php` : route `/projects`, contenu via
-  `App\Repository\ProjectRepository` (base de données — voir section Admin).
+- `src/Controller/ProjectController.php` : routes `/projects` (liste) et
+  `/projects/{slug}` (détail), contenu via `App\Repository\ProjectRepository`
+  (base de données — voir section Admin). Résumé court (`summary`, affiché
+  sur la carte, tronqué en CSS) et contenu long (`content`, Markdown, page
+  détail uniquement) sont deux champs distincts, même logique que
+  `BlogPost::summary`/`content`.
 - `src/Controller/UsesController.php` : route `/uses`, contenu via
   `App\Repository\UseCategoryRepository` (base de données — voir section
   Admin).

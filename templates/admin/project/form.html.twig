@@ -10,9 +10,26 @@
 </h1>
 
 {{ form_start(form, {attr: {class: 'flex max-w-xl flex-col gap-4'}}) }}
+    {{ form_row(form.slug) }}
     {{ form_row(form.name) }}
     {{ form_row(form.summaryFr) }}
     {{ form_row(form.summaryEn) }}
+
+    <div class="mb-1" data-controller="blog-editor">
+        {{ form_label(form.contentFr) }}
+        <div data-blog-editor-target="container" class="toastui-editor-dark overflow-hidden rounded-lg border border-parchment/10"></div>
+        {{ form_widget(form.contentFr, {attr: {'data-blog-editor-target': 'textarea'}}) }}
+        {{ form_errors(form.contentFr) }}
+    </div>
+
+    <div class="mb-1" data-controller="blog-editor">
+        {{ form_label(form.contentEn) }}
+        <div data-blog-editor-target="container" class="toastui-editor-dark overflow-hidden rounded-lg border border-parchment/10"></div>
+        {{ form_widget(form.contentEn, {attr: {'data-blog-editor-target': 'textarea'}}) }}
+        {{ form_errors(form.contentEn) }}
+    </div>
+
+    {{ form_row(form.pinned) }}
     {{ form_row(form.image) }}
     {{ form_row(form.stack) }}
     {{ form_row(form.status) }}

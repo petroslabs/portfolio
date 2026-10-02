@@ -230,3 +230,26 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 - `Makefile` : nouvelles cibles `build-prod`/`up-prod`/`down-prod`/
   `logs-prod`/`migrate-prod`/`deploy-prod` pour le déploiement en
   production sur le VPS (build → migrations → démarrage).
+
+### Ajouté
+- Page détail par projet (`/projects/{slug}`) : image, stack, statut, liens
+  Code/Démo et description longue (Markdown, `contentFr`/`contentEn`),
+  même mécanique que le Blog (WYSIWYG Toast UI réutilisé dans l'admin,
+  conversion via `league/commonmark`). Nouveau filtre Twig `|markdown`
+  (`App\Twig\MarkdownExtension`), ajout au sitemap dynamique.
+- Projets « épinglés » (`Project::pinned`) : badge étoile sur la carte et la
+  page détail, triés en premier sur `/projects`. SymAgri épinglé.
+- L'établi : nouvelle catégorie « Infra partagée » (Traefik, Docker Compose
+  multi-dépôts, mkcert) et tous les placeholders complétés (éditeur,
+  terminal, shell, machine, clavier, CI/CD), ajout d'un item OS (Omarchy).
+
+### Modifié
+- Carte projet (`<twig:ProjectCard>`) : toute la carte devient un lien vers
+  la page détail (plus de liens Code/Démo dessus, déplacés sur le détail —
+  un lien ne peut pas en contenir un autre), et ne montre plus de texte de
+  résumé du tout (il vit désormais uniquement sur la page détail) — vitrine
+  `/projects` allégée à l'image, au titre et à la stack.
+- Page détail : liens Code/Démo transformés en boutons (fond teinté,
+  bordure, plus visibles qu'un simple lien texte). Libellé « Démo » renommé
+  « Aperçu » (FR) / « Preview » (EN) — plus juste pour un lien qui pointe
+  vers un site déjà en ligne plutôt qu'une démo interactive.

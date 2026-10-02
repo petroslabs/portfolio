@@ -186,12 +186,12 @@ src/Form/                      # ProjectType, ProfileType, HubLinkType, UseCateg
 src/Controller/               # HomeController, ProjectController, UsesController, BlogController, LocaleController, SitemapController
 src/Controller/Admin/          # DashboardController, SecurityController (login/logout), ProjectController, ProfileController, HubLinkController, UseCategoryController, UseItemController, BlogPostController (CRUD)
 src/EventListener/            # LocaleSubscriber (langue depuis le cookie)
-src/Twig/                     # LocalizedContentExtension (filtre |localized)
+src/Twig/                     # LocalizedContentExtension (filtre |localized), MarkdownExtension (filtre |markdown)
 translations/                 # messages.fr.yaml / messages.en.yaml (libellés d'interface)
 templates/
 ├── base.html.twig            # Layout commun + switcher de langue + meta SEO
 ├── home/                     # Landing page
-├── projects/                 # Page Projets
+├── projects/                 # Page Projets + page détail par projet (/projects/{slug})
 ├── uses/                     # Page L'établi
 ├── blog/                     # Liste des articles + page article
 ├── admin/                    # Espace admin (layout, login, tableau de bord, CRUD Projets/Hub/Établi/Blog)

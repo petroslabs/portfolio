@@ -7,6 +7,7 @@ namespace App\Form;
 use App\Entity\Project;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -19,9 +20,16 @@ final class ProjectType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('slug', TextType::class, [
+                'label' => 'Slug',
+                'help' => 'Utilisé dans l\'URL : /projects/{slug}',
+            ])
             ->add('name', TextType::class, ['label' => 'Nom'])
-            ->add('summaryFr', TextareaType::class, ['label' => 'Résumé (FR)'])
-            ->add('summaryEn', TextareaType::class, ['label' => 'Résumé (EN)'])
+            ->add('summaryFr', TextareaType::class, ['label' => 'Résumé court (FR)', 'help' => 'Affiché sur la carte — reste bref.'])
+            ->add('summaryEn', TextareaType::class, ['label' => 'Résumé court (EN)', 'help' => 'Affiché sur la carte — reste bref.'])
+            ->add('contentFr', TextareaType::class, ['label' => 'Détail (FR)'])
+            ->add('contentEn', TextareaType::class, ['label' => 'Détail (EN)'])
+            ->add('pinned', CheckboxType::class, ['label' => 'Épinglé', 'required' => false])
             ->add('image', TextType::class, [
                 'label' => 'Image',
                 'help' => 'Chemin relatif à assets/ (ex. images/projects/mon-projet.webp)',

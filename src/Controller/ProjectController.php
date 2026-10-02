@@ -29,4 +29,18 @@ final class ProjectController extends AbstractController
             'projects' => $this->projects->findAllOrdered(),
         ]);
     }
+
+    #[Route('/projects/{slug}', name: 'app_project_show', methods: ['GET'])]
+    public function show(string $slug): Response
+    {
+        $project = $this->projects->findOneBySlug($slug);
+
+        if (null === $project) {
+            throw $this->createNotFoundException();
+        }
+
+        return $this->render('projects/show.html.twig', [
+            'project' => $project,
+        ]);
+    }
 }
