@@ -263,3 +263,15 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
   simple copie du résumé court) — plusieurs paragraphes par projet,
   cohérent avec Infra. SymAgri reste volontairement sobre côté technique
   (fermé source, destiné à la vente).
+
+### Corrigé
+- Audit sécurité : `APP_SECRET` committé en clair dans `.env.dev` depuis le
+  premier commit — fichier supprimé, secret régénéré dans `.env.local`
+  (non versionné). `league/commonmark` mis à jour (2.8.2 → 2.10.3) : 12
+  failles connues corrigées, dont un contournement de filtre XSS. Ajout de
+  `login_throttling` (5 tentatives) sur `/admin/login` via
+  `symfony/rate-limiter`. Ajout de `nelmio/security-bundle` : headers
+  `X-Frame-Options`/`X-Content-Type-Options`/`Referrer-Policy` dans tous les
+  environnements, CSP et HSTS en production uniquement (`when@prod`, pour ne
+  pas casser le hot-reload de dev qui charge des scripts depuis
+  `cdn.jsdelivr.net`).

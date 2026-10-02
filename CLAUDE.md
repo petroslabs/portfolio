@@ -204,7 +204,8 @@ schéma (entité Doctrine + migration + CRUD + carte tableau de bord).
   d'inscription publique. Un seul compte, provisionné/mis à jour via
   `php bin/console app:create-admin` (`src/Command/CreateAdminCommand.php`).
   Firewall `main` : `/admin/login` public, `/admin/*` requiert `ROLE_ADMIN`
-  (`config/packages/security.yaml`).
+  (`config/packages/security.yaml`), `login_throttling` à 5 tentatives
+  (nécessite `symfony/rate-limiter`, sans quoi la compilation échoue).
 - **CRUD** : formulaires Symfony faits main (`src/Form/`, Twig,
   `templates/admin/`) — EasyAdmin a été explicitement écarté pour garder le
   contrôle sur le rendu. Layout admin (`templates/admin/base.html.twig`)
@@ -251,6 +252,15 @@ schéma (entité Doctrine + migration + CRUD + carte tableau de bord).
   header `Origin`/`Referer` same-origin suffit à valider la requête (cf.
   `Symfony\Component\Security\Csrf\SameOriginCsrfTokenManager::isValidOrigin`)
   — inutile de rejouer la mécanique JS du cookie à double soumission.
+- **Headers de sécurité** (`nelmio/security-bundle`,
+  `config/packages/nelmio_security.yaml`) : clickjacking (`X-Frame-Options:
+  DENY`), `X-Content-Type-Options: nosniff` et `Referrer-Policy` actifs dans
+  tous les environnements. La CSP et le HSTS (`forced_ssl`), eux, ne sont
+  définis que sous `when@prod` — le hot-reload de dev charge des scripts
+  depuis `cdn.jsdelivr.net` (voir `base.html.twig`) qu'une CSP stricte
+  casserait. Toute nouvelle ressource externe (police, script, image tierce)
+  doit être ajoutée aux directives `enforce` correspondantes, sans quoi elle
+  sera bloquée silencieusement en prod (vérifier la console navigateur).
 
 ## Attentes de collaboration
 
