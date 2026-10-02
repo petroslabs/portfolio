@@ -145,6 +145,21 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
   Pas de dépôt public (`repo_url` à `NULL`), `demo_url` vers la vitrine
   commerciale (`symagri.fr`).
 
+### Modifié
+- Découplage de l'infra Docker partagée `symfony_env` : le projet embarque
+  désormais son propre PostgreSQL (service `database`, `compose.yaml`) et ne
+  dépend plus que d'un reverse proxy partagé, factorisé dans le nouveau dépôt
+  [`petroslabs/infra`](https://github.com/petroslabs/infra) (Traefik +
+  docker-proxy, rien d'autre). Chaque projet reste autonome (sa propre base,
+  déployable seul) ; seuls les ports 80/443, contrainte physique d'une seule
+  machine, restent mutualisés entre projets colocalisés. `compose.yaml`/
+  `compose.override.yaml`/`compose.prod.yaml` mis à jour en conséquence,
+  `Makefile` (retrait de `traefik-restart`/`db-create`/`db-drop`, ajout de
+  `db-shell`), `.env.docker.example` (ajout de `PROXY_NETWORK`,
+  `DB_USER`/`DB_PASSWORD`/`DB_NAME`). **Dev uniquement pour l'instant** : la
+  bascule de la production (migration des données depuis `symfony_env`,
+  cf. `migrate-prod`/`deploy-prod`) se fait dans une étape séparée.
+
 ### Corrigé
 - Rendu Markdown des articles de blog : `App\Blog\BlogPostRepository`
   utilisait `CommonMarkConverter` (spec CommonMark de base), qui ne sait pas

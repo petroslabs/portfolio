@@ -7,3 +7,14 @@ services:
       target: frankenphp_dev
     volumes:
       - ./:/app
+
+  # La base, jointe depuis l'hôte — un client psql, DataGrip. Le port est
+  # publié ici et pas dans compose.yaml : ce fichier est ignoré dès qu'on
+  # passe -f explicitement (prod), donc la production n'expose jamais sa base.
+  database:
+    ports:
+      # La borne 127.0.0.1: n'est pas décorative — sans elle Docker expose la
+      # base sur toutes les interfaces de la machine. Port hôte paramétrable
+      # (DB_PORT) : deux projets qui tournent en dev en même temps ne peuvent
+      # pas publier tous les deux 5432.
+      - "127.0.0.1:${DB_PORT:-5432}:5432"
