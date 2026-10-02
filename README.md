@@ -122,12 +122,13 @@ d'environnement du conteneur.
     [`petroslabs/infra`](https://github.com/petroslabs/infra) d'abord
     (`make up-prod` depuis son propre dossier — réseau `edge`, Let's
     Encrypt configuré), puis `PROXY_NETWORK=edge`.
-  - VPS qui héberge déjà d'autres projets derrière un proxy existant (ex.
-    `symfony_env`, qui sert aussi MécaTips) : ne pas déployer `infra` —
-    pointer `PROXY_NETWORK` sur le réseau Docker de ce proxy existant.
-    C'est le cas actuel de `petroslabs.dev` : `PROXY_NETWORK=symfony_env`,
-    `infra` reste en réserve pour un hôte sans proxy ou pour le jour où
-    `symfony_env` est entièrement démantelé (tous ses locataires migrés).
+  - VPS qui héberge déjà d'autres projets derrière un proxy existant :
+    ne pas déployer `infra` — pointer `PROXY_NETWORK` sur le réseau Docker
+    de ce proxy existant à la place.
+
+  `petroslabs.dev` tourne sur [`petroslabs/infra`](https://github.com/petroslabs/infra)
+  (`PROXY_NETWORK=edge`) — l'ancienne infra partagée `symfony_env` (qui
+  servait aussi MécaTips) a été entièrement démantelée.
 - Un sous-domaine DNS (ex. `petroslabs.dev`) qui pointe vers l'IP du VPS.
 
 ### Premier déploiement

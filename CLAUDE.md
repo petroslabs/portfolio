@@ -109,11 +109,13 @@ plusieurs projets) — démantelée au profit de ce découplage.
   stateless_token_ids` ci-dessous). Ne pas retirer.
 - Déploiement prod : `make deploy-prod` (build → migrations Doctrine → up)
   depuis le dossier du projet cloné sur le VPS, `PROXY_NETWORK` pointé sur
-  le réseau du reverse proxy déjà actif sur la machine — détail (cas VPS nu
-  vs VPS déjà occupé) dans le README. **Production actuelle
-  (`petroslabs.dev`)** : `PROXY_NETWORK=symfony_env` — le VPS héberge déjà
-  `symfony_env` (sert aussi MécaTips), donc `infra` n'y est volontairement
-  pas déployé, seul le PostgreSQL partagé a été quitté.
+  le réseau du reverse proxy déjà actif sur la machine — détail dans le
+  README. **Production actuelle (`petroslabs.dev`)** : `symfony_env`
+  (Traefik + PostgreSQL + Redis mutualisés, servait aussi MécaTips) a été
+  entièrement démantelé — conteneurs, réseaux et volumes supprimés,
+  MécaTips hors ligne (décision assumée). Le VPS tourne désormais sur
+  [`petroslabs/infra`](https://github.com/petroslabs/infra)
+  (`PROXY_NETWORK=edge`), déployé pour l'occasion.
 
 ## Architecture
 
