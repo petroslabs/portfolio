@@ -108,9 +108,12 @@ plusieurs projets) — démantelée au profit de ce découplage.
   canoniques/SEO en `http://` et validation CSRF cassée — voir `security.csrf
   stateless_token_ids` ci-dessous). Ne pas retirer.
 - Déploiement prod : `make deploy-prod` (build → migrations Doctrine → up)
-  depuis le dossier du projet cloné sur le VPS, une fois le dépôt `infra`
-  déployé sur la même machine (`make up-prod` depuis son propre dossier) —
-  détail dans le README.
+  depuis le dossier du projet cloné sur le VPS, `PROXY_NETWORK` pointé sur
+  le réseau du reverse proxy déjà actif sur la machine — détail (cas VPS nu
+  vs VPS déjà occupé) dans le README. **Production actuelle
+  (`petroslabs.dev`)** : `PROXY_NETWORK=symfony_env` — le VPS héberge déjà
+  `symfony_env` (sert aussi MécaTips), donc `infra` n'y est volontairement
+  pas déployé, seul le PostgreSQL partagé a été quitté.
 
 ## Architecture
 
