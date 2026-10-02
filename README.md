@@ -116,12 +116,18 @@ d'environnement du conteneur.
 
 ### Prérequis
 
-- [`petroslabs/infra`](https://github.com/petroslabs/infra) déjà déployé
-  **en mode production** sur le VPS (`make up-prod` depuis son propre
-  dossier — réseau Docker `edge` créé, Let's Encrypt configuré). Ce projet
-  ne fait que rejoindre ce réseau, il ne démarre pas le proxy partagé. Si le
-  VPS héberge déjà un autre reverse proxy, pointer `PROXY_NETWORK` dessus
-  à la place et ne pas déployer `infra`.
+- Un reverse proxy déjà actif sur le VPS, avec `PROXY_NETWORK` (dans
+  `.env.docker`) pointé sur son réseau Docker. Deux cas :
+  - VPS nu, aucun proxy : déployer
+    [`petroslabs/infra`](https://github.com/petroslabs/infra) d'abord
+    (`make up-prod` depuis son propre dossier — réseau `edge`, Let's
+    Encrypt configuré), puis `PROXY_NETWORK=edge`.
+  - VPS qui héberge déjà d'autres projets derrière un proxy existant (ex.
+    `symfony_env`, qui sert aussi MécaTips) : ne pas déployer `infra` —
+    pointer `PROXY_NETWORK` sur le réseau Docker de ce proxy existant.
+    C'est le cas actuel de `petroslabs.dev` : `PROXY_NETWORK=symfony_env`,
+    `infra` reste en réserve pour un hôte sans proxy ou pour le jour où
+    `symfony_env` est entièrement démantelé (tous ses locataires migrés).
 - Un sous-domaine DNS (ex. `petroslabs.dev`) qui pointe vers l'IP du VPS.
 
 ### Premier déploiement

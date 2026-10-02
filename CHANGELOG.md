@@ -156,9 +156,14 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
   `compose.override.yaml`/`compose.prod.yaml` mis à jour en conséquence,
   `Makefile` (retrait de `traefik-restart`/`db-create`/`db-drop`, ajout de
   `db-shell`), `.env.docker.example` (ajout de `PROXY_NETWORK`,
-  `DB_USER`/`DB_PASSWORD`/`DB_NAME`). **Dev uniquement pour l'instant** : la
-  bascule de la production (migration des données depuis `symfony_env`,
-  cf. `migrate-prod`/`deploy-prod`) se fait dans une étape séparée.
+  `DB_USER`/`DB_PASSWORD`/`DB_NAME`).
+- Bascule de la production effectuée : `petroslabs.dev` tourne sur son
+  PostgreSQL embarqué (base recréée à vide, entièrement reconstituée par les
+  migrations — aucune donnée de l'ancienne base partagée reprise, décision
+  assumée). Le VPS hébergeant déjà `symfony_env` en production pour un autre
+  projet (MécaTips), `infra` n'y a volontairement pas été déployé :
+  `PROXY_NETWORK=symfony_env` réutilise son Traefik existant, seul le
+  PostgreSQL partagé est quitté.
 
 ### Corrigé
 - Rendu Markdown des articles de blog : `App\Blog\BlogPostRepository`
