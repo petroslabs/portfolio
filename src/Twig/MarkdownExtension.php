@@ -10,8 +10,8 @@ use Twig\TwigFilter;
 
 /**
  * Convertit du Markdown en HTML. GithubFlavoredMarkdownConverter (pas juste
- * CommonMarkConverter) pour rester cohérent avec le contenu généré par
- * l'éditeur WYSIWYG (Toast UI) utilisé dans l'admin — voir
+ * CommonMarkConverter) : syntaxe GFM (tableaux, texte barré, task-lists) que
+ * le CommonMark de base ne sait pas interpréter — voir
  * App\Blog\BlogPostRepository, qui fait la même conversion côté blog.
  */
 final class MarkdownExtension extends AbstractExtension

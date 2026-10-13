@@ -7,9 +7,26 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 ## [Non publié]
 
 ### Ajouté
+- Premiers tests PHPUnit : `LocalizedContentExtension` (fallback FR du
+  filtre `|localized`), `LocaleSubscriber` (résolution de la langue depuis
+  le cookie), `LocaleController` (anti open-redirect sur le `Referer`),
+  `App\Blog\BlogPostRepository` (résolution bilingue, conversion Markdown,
+  tri par date), `ProjectRepository` (tri pinned/position) et
+  `SitemapController` (agrégation routes statiques + slugs blog/projets) —
+  ces trois derniers en test d'intégration (`KernelTestCase`/`WebTestCase`,
+  transaction PostgreSQL annulée après chaque test).
 - CI GitHub Actions (`.github/workflows/ci.yml`) : à chaque push/PR sur
   `main`, `composer install`, `lint:twig`, `lint:yaml`, `composer audit`,
   migrations Doctrine et `phpunit` contre un service PostgreSQL éphémère.
+
+### Corrigé
+- `App\Blog\BlogPostRepository` ne repliait pas sur le FR quand la
+  traduction EN d'un article (titre/résumé/contenu) était vide — un article
+  partiellement traduit s'affichait vide côté EN au lieu de retomber sur le
+  FR, contrairement au reste du site (filtre `|localized`). Trouvé en
+  écrivant les tests ci-dessus.
+
+### Ajouté
 - Pages d'erreur personnalisées (404, 403, 500 + filet générique pour les
   autres codes), dans la direction artistique du site : composant Twig
   `<twig:ErrorPage>` réutilisé par les templates `templates/bundles/

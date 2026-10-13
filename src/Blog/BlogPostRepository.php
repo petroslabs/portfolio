@@ -48,15 +48,30 @@ final class BlogPostRepository
 
     private function toDto(BlogPostEntity $post, string $locale): BlogPost
     {
-        $isEn = 'en' === $locale;
-
         return new BlogPost(
             slug: $post->getSlug(),
-            title: $isEn ? $post->getTitleEn() : $post->getTitleFr(),
-            summary: $isEn ? $post->getSummaryEn() : $post->getSummaryFr(),
+            title: $this->resolve($locale, $post->getTitleFr(), $post->getTitleEn()),
+            summary: $this->resolve($locale, $post->getSummaryFr(), $post->getSummaryEn()),
             date: $post->getDate(),
             cover: $post->getCover(),
-            contentHtml: (string) $this->converter->convert($isEn ? $post->getContentEn() : $post->getContentFr()),
+            contentHtml: (string) $this->converter->convert($this->resolve($locale, $post->getContentFr(), $post->getContentEn())),
         );
+    }
+
+    /**
+     * Même logique de repli que le filtre Twig |localized : la langue
+     * demandée si elle est renseignée, sinon le FR, sinon l'EN — une
+     * traduction manquante (colonne vide, pas de valeur en base comme pour
+     * les champs { fr, en }) ne doit jamais rendre une page vide.
+     */
+    private function resolve(string $locale, string $fr, string $en): string
+    {
+        $value = 'en' === $locale ? $en : $fr;
+
+        if ('' !== $value) {
+            return $value;
+        }
+
+        return '' !== $fr ? $fr : $en;
     }
 }
