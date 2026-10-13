@@ -13,11 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 /**
  * Landing page (hub central) sur "/".
  *
- * Contenu géré en base de données (App\Entity\Profile, App\Entity\HubLink),
- * éditable depuis l'espace Admin (/admin/profile, /admin/hub-links).
- *
- * Ce contrôleur est volontairement isolé pour cohabiter proprement avec les
- * futurs BlogController, ProjectController et l'espace Admin\.
+ * Contenu géré en base de données (App\Entity\Profile, App\Entity\HubLink).
  */
 final class HomeController extends AbstractController
 {

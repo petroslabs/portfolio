@@ -208,29 +208,4 @@
         color: var(--color-parchment);
         background: none;
     }
-
-    /* Éditeur WYSIWYG du blog (admin) : thème sombre officiel de Toast UI
-       Editor, avec son bleu d'accent (#67ccff) réaligné sur notre teal —
-       !important nécessaire pour surclasser la feuille de style tierce sans
-       dépendre de son ordre de chargement. */
-    .toastui-editor-dark .toastui-editor-defaultUI-toolbar .scroll-sync.active::before,
-    .toastui-editor-dark .toastui-editor-popup-add-image .toastui-editor-tabs .tab-item.active {
-        color: var(--color-teal) !important;
-        border-bottom-color: var(--color-teal) !important;
-    }
-
-    .toastui-editor-dark .toastui-editor-defaultUI-toolbar input:checked + .switch::before {
-        background-color: var(--color-teal) !important;
-    }
-
-    .toastui-editor-dark .toastui-editor-popup-body input[type='text']:focus,
-    .toastui-editor-dark table.ProseMirror-selectednode,
-    .toastui-editor-dark .html-block.ProseMirror-selectednode {
-        outline-color: var(--color-teal) !important;
-    }
-
-    .toastui-editor-dark.toastui-editor-defaultUI .toastui-editor-ok-button {
-        color: var(--color-charcoal) !important;
-        background-color: var(--color-teal) !important;
-    }
 }

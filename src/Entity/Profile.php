@@ -9,8 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Profil du hub (landing) : identité + bio. Singleton — une seule ligne,
- * éditée depuis /admin/profile (pas de création/suppression).
+ * Profil du hub (landing) : identité + bio. Singleton — une seule ligne.
  */
 #[ORM\Entity(repositoryClass: ProfileRepository::class)]
 class Profile

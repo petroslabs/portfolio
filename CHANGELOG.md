@@ -275,3 +275,17 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
   environnements, CSP et HSTS en production uniquement (`when@prod`, pour ne
   pas casser le hot-reload de dev qui charge des scripts depuis
   `cdn.jsdelivr.net`).
+
+### Retiré
+- Espace admin (`/admin`) entièrement retiré : jamais utilisé, le contenu
+  (Projets, Hub, Établi, Blog) passe désormais par des migrations Doctrine ou
+  des commandes `bin/console` ponctuelles. Suppression des contrôleurs
+  `src/Controller/Admin/`, des formulaires (`src/Form/`), des templates
+  (`templates/admin/`), de l'entité `User` (+ migration de suppression de la
+  table), de `CreateAdminCommand`, de l'authentification
+  (`symfony/security-bundle`, `config/packages/security.yaml`) et de la
+  protection CSRF stateless (`symfony/form`, `symfony/validator`,
+  `config/packages/csrf.yaml`) qui n'était utilisée que par les formulaires
+  admin. Éditeur WYSIWYG Toast UI retiré (`assets/controllers/
+  blog_editor_controller.js`, dépendances ProseMirror de l'importmap,
+  `symfony/rate-limiter` du login throttling).

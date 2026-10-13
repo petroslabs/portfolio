@@ -9,15 +9,14 @@ use App\Repository\BlogPostRepository as BlogPostEntityRepository;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 
 /**
- * Résout les articles de blog (App\Entity\BlogPost, en base — voir
- * /admin/blog) pour une langue donnée : choix du titre/résumé/contenu
- * fr ou en, conversion du Markdown en HTML. API publique (all/find)
- * inchangée depuis la version fichiers Markdown, pour ne rien casser côté
- * BlogController / SitemapController.
+ * Résout les articles de blog (App\Entity\BlogPost, en base) pour une langue
+ * donnée : choix du titre/résumé/contenu fr ou en, conversion du Markdown en
+ * HTML. API publique (all/find) inchangée depuis la version fichiers
+ * Markdown, pour ne rien casser côté BlogController / SitemapController.
  *
- * GithubFlavoredMarkdownConverter (pas juste CommonMarkConverter) : l'éditeur
- * WYSIWYG (Toast UI) génère de la syntaxe GFM (tableaux, texte barré,
- * checkboxes/task-lists) que le CommonMark de base ne sait pas interpréter.
+ * GithubFlavoredMarkdownConverter (pas juste CommonMarkConverter) : syntaxe
+ * GFM (tableaux, texte barré, checkboxes/task-lists) que le CommonMark de
+ * base ne sait pas interpréter.
  */
 final class BlogPostRepository
 {

@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 /**
  * "L'établi" sur "/uses" : les outils, la stack et le matériel utilisés au
  * quotidien. Contenu géré en base de données (App\Entity\UseCategory /
- * UseItem), éditable depuis l'espace Admin (/admin/uses).
+ * UseItem).
  */
 final class UsesController extends AbstractController
 {

@@ -1,16 +1,16 @@
 # PetrosLabs — petroslabs.dev
 
 Site perso de Pierre. Symfony (dernier LTS), pensé comme un hub qui accueillera
-progressivement un blog, des projets et un espace admin.
+progressivement un blog et des projets.
 
 ## État actuel
 
 La **landing page (`/`)**, la **page Projets (`/projects`)**, **L'établi
 (`/uses`)** et le **blog (`/blog`)** sont implémentés, avec
-**internationalisation FR/EN**. L'**espace Admin (`/admin`)** couvre
-désormais tout le contenu du site : authentification, Projets, Hub, Établi
-et Blog. Toute nouvelle section de contenu (au-delà de ces quatre) est à ne
-générer que sur demande explicite.
+**internationalisation FR/EN**. Tout le contenu (Hub, Projets, Établi, Blog)
+vit en base de données (Doctrine) — pas d'espace d'administration : le
+contenu se gère via migrations Doctrine ou commandes `bin/console` dédiées,
+à écrire au cas par cas.
 
 ## Direction artistique — à respecter impérativement
 
@@ -52,9 +52,6 @@ Polices (`@theme` → `fontFamily`) :
   longues chaînes de classes ou à de simples `{% include %}`.
 - **league/commonmark** pour le rendu des articles de blog (Markdown → HTML,
   pur PHP, pas de build JS).
-- **@toast-ui/editor** (via AssetMapper, `php bin/console importmap:require`,
-  aucun bundler npm ajouté) pour l'éditeur WYSIWYG des articles de blog dans
-  l'admin — voir section Admin.
 - Éviter le CSS vanilla hors nécessité stricte (keyframes, texture de fond) :
   privilégier les utilitaires Tailwind.
 
@@ -121,16 +118,16 @@ plusieurs projets) — démantelée au profit de ce découplage.
 
 - `src/Controller/HomeController.php` : route `/`, contenu via
   `App\Repository\ProfileRepository`/`HubLinkRepository` (base de données —
-  voir section Admin).
+  voir section Gestion du contenu).
 - `src/Controller/ProjectController.php` : routes `/projects` (liste) et
   `/projects/{slug}` (détail), contenu via `App\Repository\ProjectRepository`
-  (base de données — voir section Admin). Résumé court (`summary`, affiché
-  sur la carte, tronqué en CSS) et contenu long (`content`, Markdown, page
-  détail uniquement) sont deux champs distincts, même logique que
-  `BlogPost::summary`/`content`.
+  (base de données — voir section Gestion du contenu). Résumé court
+  (`summary`, affiché sur la carte, tronqué en CSS) et contenu long
+  (`content`, Markdown, page détail uniquement) sont deux champs distincts,
+  même logique que `BlogPost::summary`/`content`.
 - `src/Controller/UsesController.php` : route `/uses`, contenu via
   `App\Repository\UseCategoryRepository` (base de données — voir section
-  Admin).
+  Gestion du contenu).
 - `src/Controller/BlogController.php` : routes `/blog` (liste) et
   `/blog/{slug}` (article). Contenu via `App\Blog\BlogPostRepository` — une
   façade (namespace `App\Blog`, distinct de `App\Repository`) qui résout la
@@ -193,74 +190,41 @@ plusieurs projets) — démantelée au profit de ce découplage.
   compresser (WebP, ~150-300 Ko max) avant de l'ajouter — ne pas committer
   d'images brutes de plusieurs Mo.
 
-## Admin
+## Gestion du contenu
 
-Espace `/admin` — couvre désormais tout le contenu du site (Projets, Hub,
-Établi, Blog). Toute nouvelle section de contenu future suivrait le même
-schéma (entité Doctrine + migration + CRUD + carte tableau de bord).
+Pas d'espace d'administration : volontairement retiré (auth, CRUD, formulaires
+Symfony, EasyAdmin avait de toute façon été écarté) car jamais utilisé — tout
+le contenu passe par des migrations Doctrine ou des commandes `bin/console`
+ponctuelles, écrites au cas par cas selon le besoin.
 
-- **Authentification** : `App\Entity\User` (Doctrine), formulaire de
-  connexion classique (`symfony/security-bundle`, `form_login`), pas
-  d'inscription publique. Un seul compte, provisionné/mis à jour via
-  `php bin/console app:create-admin` (`src/Command/CreateAdminCommand.php`).
-  Firewall `main` : `/admin/login` public, `/admin/*` requiert `ROLE_ADMIN`
-  (`config/packages/security.yaml`), `login_throttling` à 5 tentatives
-  (nécessite `symfony/rate-limiter`, sans quoi la compilation échoue).
-- **CRUD** : formulaires Symfony faits main (`src/Form/`, Twig,
-  `templates/admin/`) — EasyAdmin a été explicitement écarté pour garder le
-  contrôle sur le rendu. Layout admin (`templates/admin/base.html.twig`)
-  volontairement sobre/utilitaire, pas l'habillage antique du site public.
-  Toujours garder un lien visible vers le site public (`app_home`), y
-  compris sur l'écran de login.
-- **Tableau de bord** (`/admin`, `DashboardController`) : une carte par
-  section de contenu, même si toutes ne sont pas encore actives — ne pas
-  rediriger directement vers une section en particulier. Ajouter une
-  nouvelle carte (active) dès qu'une section rejoint l'Admin.
-- **Migration YAML/Markdown → base** : chaque type de contenu couvert par
-  l'Admin a basculé de sa config YAML (ou fichiers Markdown pour le Blog)
-  vers une entité Doctrine + migration (reprenant les données existantes),
-  au moment où son CRUD a été développé. Les quatre sections de contenu du
-  site sont maintenant en base — aucune ne reste en fichiers.
-- **Hub** : profil (`App\Entity\Profile`, singleton — une seule ligne,
-  `/admin/profile` en édition seule, pas de create/delete) et liens
-  (`App\Entity\HubLink`, `/admin/hub-links`, CRUD complet, champ `position`
-  pour l'ordre d'affichage). Champs bilingues stockés en deux colonnes
-  (`labelFr`/`labelEn`, etc.) avec un accesseur `getLabel(): array` qui
-  recompose `{ fr, en }` pour rester compatible avec le filtre `|localized`
-  dans les templates — même trick que `Project::getSummary()`.
+- **Hub** : profil (`App\Entity\Profile`, singleton — une seule ligne) et
+  liens (`App\Entity\HubLink`, champ `position` pour l'ordre d'affichage).
+  Champs bilingues stockés en deux colonnes (`labelFr`/`labelEn`, etc.) avec
+  un accesseur `getLabel(): array` qui recompose `{ fr, en }` pour rester
+  compatible avec le filtre `|localized` dans les templates — même trick que
+  `Project::getSummary()`.
 - **Établi** : `App\Entity\UseCategory` (catégories, avec sa collection
   `items` triée par `position` via `#[ORM\OrderBy]`) et `App\Entity\UseItem`
-  (`ManyToOne` vers sa catégorie), CRUD sur `/admin/uses`. Supprimer une
-  catégorie supprime ses items (`cascade: ['remove'], orphanRemoval: true`)
-  — comportement voulu, pas de confirmation supplémentaire à ajouter.
+  (`ManyToOne` vers sa catégorie). Supprimer une catégorie supprime ses items
+  (`cascade: ['remove'], orphanRemoval: true`).
 - **Blog** : `App\Entity\BlogPost` (`src/Entity/`, table `blog_post` —
-  distinct de `App\Blog\BlogPost`, le DTO résolu pour le rendu), CRUD sur
-  `/admin/blog`. Le contenu Markdown reste stocké tel quel en base
-  (`contentFr`/`contentEn`), converti en HTML à l'affichage par
-  `App\Blog\BlogPostRepository` — même logique de rendu qu'avant la
-  migration, seule la source de lecture change (base plutôt que fichiers).
-  Édition via un éditeur WYSIWYG (Toast UI Editor, `assets/controllers/
-  blog_editor_controller.js`) qui synchronise le Markdown généré vers le
-  textarea du formulaire — le stockage reste du Markdown brut, aucun
-  changement de schéma/rendu pour ce choix d'éditeur.
-- **CSRF en environnement de test/debug** : le projet utilise la protection
-  CSRF *stateless* (`config/packages/csrf.yaml`,
-  `framework.csrf_protection.stateless_token_ids`) — le token rendu dans le
-  HTML est un placeholder fixe ("csrf-token"), complété côté client par
-  `assets/controllers/csrf_protection_controller.js` (Stimulus). Pour tester
-  une soumission de formulaire admin sans navigateur (ex. `curl`), envoyer un
-  header `Origin`/`Referer` same-origin suffit à valider la requête (cf.
-  `Symfony\Component\Security\Csrf\SameOriginCsrfTokenManager::isValidOrigin`)
-  — inutile de rejouer la mécanique JS du cookie à double soumission.
-- **Headers de sécurité** (`nelmio/security-bundle`,
-  `config/packages/nelmio_security.yaml`) : clickjacking (`X-Frame-Options:
-  DENY`), `X-Content-Type-Options: nosniff` et `Referrer-Policy` actifs dans
-  tous les environnements. La CSP et le HSTS (`forced_ssl`), eux, ne sont
-  définis que sous `when@prod` — le hot-reload de dev charge des scripts
-  depuis `cdn.jsdelivr.net` (voir `base.html.twig`) qu'une CSP stricte
-  casserait. Toute nouvelle ressource externe (police, script, image tierce)
-  doit être ajoutée aux directives `enforce` correspondantes, sans quoi elle
-  sera bloquée silencieusement en prod (vérifier la console navigateur).
+  distinct de `App\Blog\BlogPost`, le DTO résolu pour le rendu). Contenu
+  Markdown stocké tel quel en base (`contentFr`/`contentEn`), converti en
+  HTML à l'affichage par `App\Blog\BlogPostRepository`.
+- Toutes ces entités sont passées de fichiers (YAML/Markdown) à des tables
+  Doctrine lors de leur migration initiale — aucune ne reste en fichiers.
+
+## Sécurité
+
+- **Headers** (`nelmio/security-bundle`, `config/packages/nelmio_security.yaml`) :
+  clickjacking (`X-Frame-Options: DENY`), `X-Content-Type-Options: nosniff`
+  et `Referrer-Policy` actifs dans tous les environnements. La CSP et le HSTS
+  (`forced_ssl`), eux, ne sont définis que sous `when@prod` — le hot-reload
+  de dev charge des scripts depuis `cdn.jsdelivr.net` (voir `base.html.twig`)
+  qu'une CSP stricte casserait. Toute nouvelle ressource externe (police,
+  script, image tierce) doit être ajoutée aux directives `enforce`
+  correspondantes, sans quoi elle sera bloquée silencieusement en prod
+  (vérifier la console navigateur).
 
 ## Attentes de collaboration
 
@@ -271,10 +235,10 @@ schéma (entité Doctrine + migration + CRUD + carte tableau de bord).
   commentaire, reformulation mineure) — utiliser le jugement.
 - **Tenir le `README.md` à jour** : quand un changement modifie la stack, la
   structure du projet, les commandes de dev/build ou l'état d'avancement
-  (cases à cocher blog/projets/admin), répercuter la mise à jour dans le
-  README. Comme pour le changelog, pas la peine pour un détail sans impact
-  sur ce que lirait un nouvel arrivant sur le projet.
-- Avant de générer de nouvelles pages/fonctionnalités (blog, projets, admin),
+  (cases à cocher blog/projets), répercuter la mise à jour dans le README.
+  Comme pour le changelog, pas la peine pour un détail sans impact sur ce que
+  lirait un nouvel arrivant sur le projet.
+- Avant de générer de nouvelles pages/fonctionnalités (blog, projets),
   proposer l'arborescence et attendre validation avant d'exécuter, comme pour
   la landing initiale.
 - **Ne jamais commit/push automatiquement.** Une fois le travail terminé,

@@ -12,8 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 /**
  * Vitrine des projets sur "/projects".
  *
- * Contenu géré en base de données (App\Entity\Project), éditable depuis
- * l'espace Admin (/admin/projects).
+ * Contenu géré en base de données (App\Entity\Project).
  */
 final class ProjectController extends AbstractController
 {

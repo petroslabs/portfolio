@@ -1,7 +1,7 @@
 # PetrosLabs — petroslabs.dev
 
 Site personnel de Pierre : un hub central qui accueillera progressivement un
-blog, une vitrine de projets et un espace d'administration.
+blog et une vitrine de projets.
 
 **Direction artistique** : fusion entre l'austérité de la Grèce antique
 (pierre, marbre, motif méandre) et un laboratoire de dev moderne (terminal,
@@ -14,8 +14,7 @@ lueurs teal/bronze nocturnes). Détails complets dans [`CLAUDE.md`](CLAUDE.md).
 - ✅ L'établi (`/uses`) — outils, stack et matériel au quotidien
 - ✅ Internationalisation FR/EN (sans préfixe d'URL, cookie de préférence)
 - ✅ SEO de base (robots.txt, sitemap, canonical, og:image, JSON-LD)
-- ✅ Blog (`/blog`) — articles en base, éditables depuis l'admin
-- ✅ Espace admin (`/admin`) — auth + CRUD Projets, Hub, Établi, Blog
+- ✅ Blog (`/blog`) — articles en base
 
 Voir [`CHANGELOG.md`](CHANGELOG.md) pour le détail des évolutions.
 
@@ -149,9 +148,6 @@ cp .env.docker.example .env.docker
 
 # 3. Build → migrations → démarrage
 make deploy-prod
-
-# 4. Créer le compte admin
-make console cmd="app:create-admin"
 ```
 
 Le site est alors accessible sur `https://<APP_DOMAIN>`.
@@ -179,12 +175,9 @@ compose.override.yaml         # Overrides dev (auto-chargés) : stage dev + bind
 compose.prod.yaml             # Overrides production : certresolver Let's Encrypt, limites de ressources
 migrations/                   # Migrations Doctrine (schéma + données reprises des YAML/Markdown supprimés)
 src/Blog/                     # BlogPost (DTO résolu), BlogPostRepository (résout langue + Markdown→HTML, lit la base)
-src/Command/                   # CreateAdminCommand (app:create-admin)
-src/Entity/                    # User, Project, Profile, HubLink, UseCategory, UseItem, BlogPost (Doctrine ORM)
-src/Repository/                # UserRepository, ProjectRepository, ProfileRepository, HubLinkRepository, UseCategoryRepository, UseItemRepository, BlogPostRepository
-src/Form/                      # ProjectType, ProfileType, HubLinkType, UseCategoryType, UseItemType, BlogPostType
+src/Entity/                    # Project, Profile, HubLink, UseCategory, UseItem, BlogPost (Doctrine ORM)
+src/Repository/                # ProjectRepository, ProfileRepository, HubLinkRepository, UseCategoryRepository, UseItemRepository, BlogPostRepository
 src/Controller/               # HomeController, ProjectController, UsesController, BlogController, LocaleController, SitemapController
-src/Controller/Admin/          # DashboardController, SecurityController (login/logout), ProjectController, ProfileController, HubLinkController, UseCategoryController, UseItemController, BlogPostController (CRUD)
 src/EventListener/            # LocaleSubscriber (langue depuis le cookie)
 src/Twig/                     # LocalizedContentExtension (filtre |localized), MarkdownExtension (filtre |markdown)
 translations/                 # messages.fr.yaml / messages.en.yaml (libellés d'interface)
@@ -194,7 +187,6 @@ templates/
 ├── projects/                 # Page Projets + page détail par projet (/projects/{slug})
 ├── uses/                     # Page L'établi
 ├── blog/                     # Liste des articles + page article
-├── admin/                    # Espace admin (layout, login, tableau de bord, CRUD Projets/Hub/Établi/Blog)
 ├── sitemap/                  # Template XML du sitemap
 └── components/                # Composants Twig réutilisables (LinkCard, ProjectCard, PostCard, Meander, SiteFooter…)
 assets/styles/app.css         # Thème Tailwind (@theme : palette, polices, animations) + typographie .prose-blog
@@ -214,52 +206,22 @@ public/robots.txt             # Autorise l'indexation, référence le sitemap
 
 ## Blog
 
-- Articles en base de données (`App\Entity\BlogPost`), éditables depuis
-  `/admin/blog` — voir section Admin. Contenu (titre, résumé, corps) stocké
-  en Markdown brut par langue (`contentFr`/`contentEn`), converti en HTML à
-  l'affichage via `league/commonmark`.
+- Articles en base de données (`App\Entity\BlogPost`). Contenu (titre,
+  résumé, corps) stocké en Markdown brut par langue (`contentFr`/`contentEn`),
+  converti en HTML à l'affichage via `league/commonmark`.
 - Si la traduction d'une langue manque pour un article, la version FR sert
   de repli (même logique que le filtre `|localized`).
 - `App\Blog\BlogPostRepository` (namespace distinct de `App\Repository\`)
   résout l'article pour la langue courante et fait la conversion Markdown →
   HTML ; c'est cette façade que lisent `BlogController` et
   `SitemapController`.
-- Édition via un éditeur WYSIWYG ([Toast UI Editor](https://ui.toast.com/tui-editor)),
-  ajouté via AssetMapper (`assets/controllers/blog_editor_controller.js`,
-  Stimulus). Il édite visuellement mais synchronise en continu le Markdown
-  généré vers le champ réel du formulaire — le stockage reste inchangé.
 
-## Admin
+## Gestion du contenu
 
-Espace `/admin`, protégé par authentification — couvre l'ensemble du
-contenu du site : Projets, Hub, Établi et Blog.
-
-- Un seul compte admin, pas d'inscription publique. Le créer (ou changer son
-  mot de passe) :
-  ```bash
-  make console cmd="app:create-admin"
-  ```
-- Connexion : `/admin/login` (formulaire), déconnexion via le lien dans
-  l'en-tête admin.
-- Tableau de bord : `/admin` — une carte par section de contenu (Projets,
-  Hub, Établi et Blog). Le login y redirige.
-- Projets : `/admin/projects` (liste, création, édition, suppression) —
-  formulaires Symfony faits main (pas d'EasyAdmin), gabarit sobre et
-  utilitaire (`templates/admin/`), sans l'habillage antique du site public.
-  Contenu en base (`App\Entity\Project`) — la page publique `/projects` lit
-  `ProjectRepository`.
-- Hub : `/admin/profile` (profil — singleton, édition seule) et
-  `/admin/hub-links` (liens du hub — liste, création, édition, suppression).
-  Contenu en base (`App\Entity\Profile`, `App\Entity\HubLink`) — la landing
-  publique (`/`) lit `ProfileRepository`/`HubLinkRepository`.
-- L'établi : `/admin/uses` (catégories — liste, création, édition,
-  suppression) et items (rattachés à une catégorie, même CRUD). Supprimer
-  une catégorie supprime ses items. Contenu en base (`App\Entity\UseCategory`,
-  `App\Entity\UseItem`) — la page publique `/uses` lit
-  `UseCategoryRepository`.
-- Blog : `/admin/blog` (liste, création, édition, suppression). Contenu
-  Markdown par langue stocké en base (`App\Entity\BlogPost`) — voir section
-  Blog pour le détail du rendu.
+Pas d'espace d'administration : le contenu (Projets, Hub, Établi, Blog) se
+gère via migrations Doctrine ou commandes `bin/console` ponctuelles, écrites
+au cas par cas. Voir [`CLAUDE.md`](CLAUDE.md#gestion-du-contenu) pour le
+détail des entités.
 
 ## Internationalisation
 
