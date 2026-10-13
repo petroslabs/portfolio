@@ -220,6 +220,14 @@ public/robots.txt             # Autorise l'indexation, référence le sitemap
   résout l'article pour la langue courante et fait la conversion Markdown →
   HTML ; c'est cette façade que lisent `BlogController` et
   `SitemapController`.
+- Créer ou mettre à jour un article :
+  ```bash
+  make console cmd="app:blog:post"
+  ```
+  Commande interactive (`src/Command/BlogPostCommand.php`) : slug, titres,
+  résumés, puis chemin vers un fichier Markdown pour le contenu FR et EN
+  (rédigé dans l'éditeur habituel). Si le slug existe déjà, propose de
+  garder chaque valeur (touche Entrée) plutôt que de tout ressaisir.
 
 ## Gestion du contenu
 

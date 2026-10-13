@@ -7,14 +7,20 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 ## [Non publié]
 
 ### Ajouté
+- Commande `bin/console app:blog:post` (`src/Command/BlogPostCommand.php`) :
+  crée ou met à jour un article de blog de façon interactive (slug, titres,
+  résumés, contenu lu depuis un fichier Markdown FR/EN) — remplace l'écriture
+  à la main d'une migration Doctrine par article.
 - Premiers tests PHPUnit : `LocalizedContentExtension` (fallback FR du
   filtre `|localized`), `LocaleSubscriber` (résolution de la langue depuis
   le cookie), `LocaleController` (anti open-redirect sur le `Referer`),
   `App\Blog\BlogPostRepository` (résolution bilingue, conversion Markdown,
-  tri par date), `ProjectRepository` (tri pinned/position) et
-  `SitemapController` (agrégation routes statiques + slugs blog/projets) —
-  ces trois derniers en test d'intégration (`KernelTestCase`/`WebTestCase`,
-  transaction PostgreSQL annulée après chaque test).
+  tri par date), `ProjectRepository` (tri pinned/position),
+  `SitemapController` (agrégation routes statiques + slugs blog/projets) et
+  `BlogPostCommand` (création/mise à jour, validation du slug, conservation
+  des valeurs existantes) — ces quatre derniers en test d'intégration
+  (`KernelTestCase`/`WebTestCase`, transaction PostgreSQL annulée après
+  chaque test).
 - CI GitHub Actions (`.github/workflows/ci.yml`) : à chaque push/PR sur
   `main`, `composer install`, `lint:twig`, `lint:yaml`, `composer audit`,
   migrations Doctrine et `phpunit` contre un service PostgreSQL éphémère.

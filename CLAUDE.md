@@ -210,7 +210,11 @@ ponctuelles, écrites au cas par cas selon le besoin.
 - **Blog** : `App\Entity\BlogPost` (`src/Entity/`, table `blog_post` —
   distinct de `App\Blog\BlogPost`, le DTO résolu pour le rendu). Contenu
   Markdown stocké tel quel en base (`contentFr`/`contentEn`), converti en
-  HTML à l'affichage par `App\Blog\BlogPostRepository`.
+  HTML à l'affichage par `App\Blog\BlogPostRepository`. Création/mise à jour
+  via `bin/console app:blog:post` (`src/Command/BlogPostCommand.php`,
+  interactif, trouve l'article par slug pour savoir s'il crée ou met à
+  jour) plutôt qu'une migration à la main — le contenu FR/EN se rédige dans
+  un fichier Markdown à part, la commande ne fait que lire le chemin donné.
 - Toutes ces entités sont passées de fichiers (YAML/Markdown) à des tables
   Doctrine lors de leur migration initiale — aucune ne reste en fichiers.
 
