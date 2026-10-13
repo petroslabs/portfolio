@@ -37,3 +37,22 @@ status:
 
 footer:
     tagline: 'quelque part entre Sparte et le terminal'
+
+error:
+    back: "l'accueil"
+    404:
+        meta_title: 'Page introuvable — PetrosLabs'
+        title: 'Colonne manquante'
+        message: "Cette page n'existe pas, ou plus — la fouille archéologique n'a rien donné."
+    403:
+        meta_title: 'Accès refusé — PetrosLabs'
+        title: 'Accès refusé'
+        message: "Cette salle du laboratoire ne t'est pas ouverte."
+    500:
+        meta_title: 'Erreur serveur — PetrosLabs'
+        title: 'Court-circuit'
+        message: "Une expérience a mal tourné dans le laboratoire. On répare."
+    default:
+        meta_title: 'Erreur — PetrosLabs'
+        title: 'Incident'
+        message: "Quelque chose s'est mal passé."

@@ -203,6 +203,7 @@ public/robots.txt             # Autorise l'indexation, référence le sitemap
 - **Limite assumée** : sans préfixe d'URL, les moteurs de recherche
   n'indexent que la version FR (par défaut) — l'EN est une option de
   confort pour les visiteurs, pas un contenu séparé référencé.
+- Pages d'erreur personnalisées (404, 403, 500…), `meta robots: noindex`.
 
 ## Blog
 

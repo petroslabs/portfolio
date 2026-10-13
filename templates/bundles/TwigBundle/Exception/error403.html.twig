@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'error.403.meta_title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'error.403.message'|trans }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block body %}
+    <twig:ErrorPage code="403" title="{{ 'error.403.title'|trans }}" message="{{ 'error.403.message'|trans }}" />
+{% endblock %}

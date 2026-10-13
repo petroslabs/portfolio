@@ -7,6 +7,10 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 ## [Non publié]
 
 ### Ajouté
+- Pages d'erreur personnalisées (404, 403, 500 + filet générique pour les
+  autres codes), dans la direction artistique du site : composant Twig
+  `<twig:ErrorPage>` réutilisé par les templates `templates/bundles/
+  TwigBundle/Exception/`, meta `robots: noindex`, bilingue FR/EN.
 - Landing page (`/`) : hub central avec bannière (désactivée pour le moment),
   logo, titre, tagline terminal, bio et grille de liens (GitHub, Email, Blog,
   Projets, LinkedIn).

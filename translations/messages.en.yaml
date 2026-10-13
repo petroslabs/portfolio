@@ -37,3 +37,22 @@ status:
 
 footer:
     tagline: 'somewhere between Sparta and the terminal'
+
+error:
+    back: 'home'
+    404:
+        meta_title: 'Page not found — PetrosLabs'
+        title: 'Missing column'
+        message: "This page doesn't exist, or not anymore — the archaeological dig came up empty."
+    403:
+        meta_title: 'Access denied — PetrosLabs'
+        title: 'Access denied'
+        message: "This room of the lab isn't open to you."
+    500:
+        meta_title: 'Server error — PetrosLabs'
+        title: 'Short circuit'
+        message: 'An experiment went wrong in the lab. Fixing it.'
+    default:
+        meta_title: 'Error — PetrosLabs'
+        title: 'Incident'
+        message: 'Something went wrong.'

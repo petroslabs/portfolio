@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}{{ 'home.meta_title'|trans }}{% endblock %}</title>
         <meta name="description" content="{% block meta_description %}{{ 'home.meta_description'|trans }}{% endblock %}">
+        {% block robots %}{% endblock %}
 
         {# URL canonique (sans query string) — la version FR est celle indexée par
            les moteurs de recherche : notre i18n cookie/sans-préfixe ne permet pas
