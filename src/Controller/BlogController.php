@@ -11,10 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * Blog sur "/blog" (liste) et "/blog/{slug}" (article).
- *
- * Contenu en fichiers Markdown (content/blog/), pas de base de données —
- * voir App\Blog\BlogPostRepository.
+ * Blog sur "/blog" (liste), "/blog/{slug}" (article) et "/blog/rss.xml"
+ * (flux RSS). Contenu en base de données — voir App\Blog\BlogPostRepository.
  */
 final class BlogController extends AbstractController
 {
@@ -30,6 +28,20 @@ final class BlogController extends AbstractController
         return $this->render('blog/index.html.twig', [
             'posts' => $this->posts->all($this->locale()),
         ]);
+    }
+
+    #[Route('/blog/rss.xml', name: 'app_blog_rss', methods: ['GET'])]
+    public function rss(): Response
+    {
+        $response = $this->render('blog/rss.xml.twig', [
+            // Même limite assumée que le reste du SEO : pas de hreflang
+            // correct possible avec l'i18n cookie/sans-préfixe, donc un seul
+            // flux FR plutôt qu'une version par langue.
+            'posts' => $this->posts->all('fr'),
+        ]);
+        $response->headers->set('Content-Type', 'application/rss+xml; charset=UTF-8');
+
+        return $response;
     }
 
     #[Route('/blog/{slug}', name: 'app_blog_show', methods: ['GET'])]

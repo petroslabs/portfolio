@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+    <channel>
+        <title>{{ 'blog.title'|trans }} — PetrosLabs</title>
+        <link>{{ absolute_url(path('app_blog')) }}</link>
+        <description>{{ 'blog.meta_description'|trans }}</description>
+        <language>fr</language>
+        <atom:link xmlns:atom="http://www.w3.org/2005/Atom" href="{{ absolute_url(path('app_blog_rss')) }}" rel="self" type="application/rss+xml" />
+        {% for post in posts %}
+        <item>
+            <title>{{ post.title }}</title>
+            <link>{{ absolute_url(path('app_blog_show', {slug: post.slug})) }}</link>
+            <guid isPermaLink="true">{{ absolute_url(path('app_blog_show', {slug: post.slug})) }}</guid>
+            <description>{{ post.summary }}</description>
+            <pubDate>{{ post.date|date(constant('DateTimeInterface::RSS')) }}</pubDate>
+        </item>
+        {% endfor %}
+    </channel>
+</rss>

@@ -7,6 +7,9 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 ## [Non publié]
 
 ### Ajouté
+- Flux RSS du blog (`/blog/rss.xml`, FR uniquement), découvrable via
+  `<link rel="alternate">` sur chaque page. Test fonctionnel couvrant un
+  flux avec et sans articles.
 - Commande `bin/console app:blog:post` (`src/Command/BlogPostCommand.php`) :
   crée ou met à jour un article de blog de façon interactive (slug, titres,
   résumés, contenu lu depuis un fichier Markdown FR/EN) — remplace l'écriture

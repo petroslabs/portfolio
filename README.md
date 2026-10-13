@@ -220,6 +220,8 @@ public/robots.txt             # Autorise l'indexation, référence le sitemap
   résout l'article pour la langue courante et fait la conversion Markdown →
   HTML ; c'est cette façade que lisent `BlogController` et
   `SitemapController`.
+- Flux RSS sur `/blog/rss.xml` (FR uniquement, résumé en description),
+  découvrable via la balise `<link rel="alternate">` sur chaque page.
 - Créer ou mettre à jour un article :
   ```bash
   make console cmd="app:blog:post"

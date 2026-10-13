@@ -128,12 +128,16 @@ plusieurs projets) — démantelée au profit de ce découplage.
 - `src/Controller/UsesController.php` : route `/uses`, contenu via
   `App\Repository\UseCategoryRepository` (base de données — voir section
   Gestion du contenu).
-- `src/Controller/BlogController.php` : routes `/blog` (liste) et
-  `/blog/{slug}` (article). Contenu via `App\Blog\BlogPostRepository` — une
-  façade (namespace `App\Blog`, distinct de `App\Repository`) qui résout la
-  langue et convertit le Markdown en HTML, en s'appuyant en interne sur
+- `src/Controller/BlogController.php` : routes `/blog` (liste), `/blog/{slug}`
+  (article) et `/blog/rss.xml` (flux RSS — route déclarée avant `/blog/{slug}`
+  dans la classe, sans quoi le routeur la ferait matcher comme un slug).
+  Contenu via `App\Blog\BlogPostRepository` — une façade (namespace
+  `App\Blog`, distinct de `App\Repository`) qui résout la langue et convertit
+  le Markdown en HTML, en s'appuyant en interne sur
   `App\Repository\BlogPostRepository` (Doctrine, base de données). Fallback
-  FR si une traduction manque, comme `|localized`.
+  FR si une traduction manque, comme `|localized`. Le flux RSS reste en FR
+  uniquement (même limite assumée que le reste du SEO — voir section SEO) et
+  utilise le résumé comme description, pas le contenu complet.
 - `templates/base.html.twig` : layout commun (polices, metas, fond, colonnes
   décoratives, switcher de langue).
 - `templates/home/index.html.twig` : la landing, étend `base.html.twig`.

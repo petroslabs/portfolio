@@ -32,6 +32,8 @@
 
         {% block schema %}{% endblock %}
 
+        <link rel="alternate" type="application/rss+xml" title="{{ 'blog.title'|trans }} — PetrosLabs" href="{{ path('app_blog_rss') }}">
+
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.1em%22 font-size=%22104%22>🏛️</text></svg>">
 
         {# Polices : Cinzel (titres) · Inter (corps) · JetBrains Mono (terminal) #}
