@@ -7,6 +7,9 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 ## [Non publié]
 
 ### Ajouté
+- CI GitHub Actions (`.github/workflows/ci.yml`) : à chaque push/PR sur
+  `main`, `composer install`, `lint:twig`, `lint:yaml`, `composer audit`,
+  migrations Doctrine et `phpunit` contre un service PostgreSQL éphémère.
 - Pages d'erreur personnalisées (404, 403, 500 + filet générique pour les
   autres codes), dans la direction artistique du site : composant Twig
   `<twig:ErrorPage>` réutilisé par les templates `templates/bundles/

@@ -59,6 +59,10 @@ Le site est alors accessible sur http://localhost:8000.
 Autres commandes utiles : `make lint` (Twig + YAML), `make test` (PHPUnit),
 `make cache-clear`.
 
+CI GitHub Actions (`.github/workflows/ci.yml`) sur chaque push/PR vers
+`main` : lint, `composer audit`, migrations et tests contre un PostgreSQL
+éphémère.
+
 ## Développement via Docker
 
 Le projet est autonome : il embarque sa propre base PostgreSQL (service
