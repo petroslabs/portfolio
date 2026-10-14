@@ -208,6 +208,8 @@ public/robots.txt             # Autorise l'indexation, référence le sitemap
   n'indexent que la version FR (par défaut) — l'EN est une option de
   confort pour les visiteurs, pas un contenu séparé référencé.
 - Pages d'erreur personnalisées (404, 403, 500…), `meta robots: noindex`.
+- Images compressées (WebP, ~150-300 Ko max), vérifié périodiquement par
+  audit Lighthouse sur `petroslabs.dev`.
 
 ## Blog
 

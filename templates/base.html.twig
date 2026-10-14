@@ -45,7 +45,11 @@
         {% endblock %}
 
         {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
+            {# csp_nonce('script') : sans lui, nelmio replie script-src sur
+               default-src (valeurs identiques) et les <script> de
+               l'importmap sont bloqués en prod — nonce généré par requête,
+               jamais figé dans le corps du script (voir ImportMapRenderer). #}
+            {% block importmap %}{{ importmap('app', {nonce: csp_nonce('script')}) }}{% endblock %}
         {% endblock %}
 
         {% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}

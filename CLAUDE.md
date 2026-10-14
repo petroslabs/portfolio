@@ -233,6 +233,21 @@ ponctuelles, écrites au cas par cas selon le besoin.
   script, image tierce) doit être ajoutée aux directives `enforce`
   correspondantes, sans quoi elle sera bloquée silencieusement en prod
   (vérifier la console navigateur).
+- **Piège CSP découvert par audit** : si une directive `enforce` a
+  exactement la même valeur que `default-src` (ex. `script-src: ["'self'"]`
+  == `default-src: ["'self'"]`), nelmio la considère redondante et ne
+  l'émet pas dans le header — elle "replie" silencieusement sur
+  `default-src`. Ça casse l'injection de nonce (`csp_nonce()`) tant qu'un
+  nonce n'est pas explicitement demandé : sans ça, `importmap()` (3
+  `<script>` inline) est bloqué en prod sans jamais planter visiblement,
+  juste des erreurs CSP en console. D'où `{{ importmap('app', {nonce:
+  csp_nonce('script')}) }}` dans `base.html.twig` plutôt que
+  `importmap('app')` seul. Pour vérifier une CSP en local sans toucher la
+  prod : builder le stage `frankenphp_prod` (`docker build --target
+  frankenphp_prod`), le lancer avec un header `X-Forwarded-Proto: https`
+  (simule Traefik) contre une base PostgreSQL jetable, puis comparer le
+  nonce du header `Content-Security-Policy` à celui des balises `<script>`
+  dans le HTML — doivent être identiques sur une même réponse.
 
 ## Attentes de collaboration
 

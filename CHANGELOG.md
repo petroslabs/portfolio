@@ -6,6 +6,21 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 
 ## [Non publié]
 
+### Corrigé
+- CSP de production : les 3 `<script>` générés par `importmap()` (import map,
+  shim de secours, bootstrap Stimulus) étaient bloqués en silence —
+  `script-src` est identique à `default-src` ('self'), donc nelmio le
+  replie sur `default-src` et n'émet pas de directive dédiée tant qu'aucun
+  nonce n'est demandé. Fix : `csp_nonce('script')` passé à `importmap()`
+  dans `base.html.twig`, ce qui fait émettre à nelmio un `script-src` avec
+  nonce par requête. Vérifié par un build local du stage `frankenphp_prod` :
+  nonce du header CSP identique à celui du HTML sur une même réponse.
+  Trouvé via un audit Lighthouse (`errors-in-console`, `inspector-issues`).
+- Logo du profil (297 Ko, PNG 1254×1254, affiché à 128px) converti en WebP
+  512×512 (52 Ko, -82 %) — au-delà de la limite ~150-300 Ko du projet et
+  bien plus gros que nécessaire pour sa taille d'affichage. Migration
+  `profile.logo` → `images/logo.webp`.
+
 ### Ajouté
 - Flux RSS du blog (`/blog/rss.xml`, FR uniquement), découvrable via
   `<link rel="alternate">` sur chaque page. Test fonctionnel couvrant un
