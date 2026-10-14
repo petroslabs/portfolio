@@ -28,7 +28,14 @@ when@prod:
             enabled: true
             enforce:
                 default-src: ["'self'"]
-                script-src: ["'self'"]
+                # 'strict-dynamic' : AssetMapper charge app.css via un import
+                # JS vers une URI data: (voir assets/app.js) — un nonce ne
+                # couvre que le script qui le porte, pas ce qu'il importe
+                # dynamiquement ensuite. 'strict-dynamic' propage la
+                # confiance du script noncé à ses imports (CSP3, ignoré sans
+                # casse par les navigateurs CSP1/2, qui retombent sur
+                # 'self'/nonce/unsafe-inline).
+                script-src: ["'self'", "'strict-dynamic'"]
                 style-src: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com']
                 font-src: ["'self'", 'https://fonts.gstatic.com']
                 img-src: ["'self'", 'data:']

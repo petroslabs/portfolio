@@ -13,9 +13,16 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
   replie sur `default-src` et n'émet pas de directive dédiée tant qu'aucun
   nonce n'est demandé. Fix : `csp_nonce('script')` passé à `importmap()`
   dans `base.html.twig`, ce qui fait émettre à nelmio un `script-src` avec
-  nonce par requête. Vérifié par un build local du stage `frankenphp_prod` :
-  nonce du header CSP identique à celui du HTML sur une même réponse.
-  Trouvé via un audit Lighthouse (`errors-in-console`, `inspector-issues`).
+  nonce par requête. Un deuxième résidu subsistait : `assets/app.js` importe
+  `./styles/app.css` (chargé en réalité via le `<link>` généré côté serveur —
+  cet import ne fait rien, mais la tentative de charger l'URI `data:` qui le
+  représente dans l'import map était quand même bloquée par le CSP, un nonce
+  ne couvrant que le script qui le porte, pas ce qu'il importe ensuite).
+  Ajout de `'strict-dynamic'` à `script-src` (CSP3, propage la confiance du
+  script noncé à ses imports dynamiques). Vérifié par deux builds locaux du
+  stage `frankenphp_prod` : nonce du header CSP identique à celui du HTML
+  sur une même réponse. Trouvé via un audit Lighthouse (`errors-in-console`,
+  `inspector-issues`) sur `petroslabs.dev`.
 - Logo du profil (297 Ko, PNG 1254×1254, affiché à 128px) converti en WebP
   512×512 (52 Ko, -82 %) — au-delà de la limite ~150-300 Ko du projet et
   bien plus gros que nécessaire pour sa taille d'affichage. Migration

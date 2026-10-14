@@ -248,6 +248,15 @@ ponctuelles, écrites au cas par cas selon le besoin.
   (simule Traefik) contre une base PostgreSQL jetable, puis comparer le
   nonce du header `Content-Security-Policy` à celui des balises `<script>`
   dans le HTML — doivent être identiques sur une même réponse.
+- **`'strict-dynamic'` sur `script-src`** : `assets/app.js` importe
+  `./styles/app.css` — AssetMapper résout ça en une URI `data:` no-op dans
+  l'import map (le CSS est en réalité chargé via le `<link>` généré côté
+  serveur). Un nonce ne couvre que le script qui le porte, pas ce qu'il
+  importe dynamiquement ensuite : sans `'strict-dynamic'`, cette URI `data:`
+  est bloquée par le CSP (console uniquement, aucun impact visible — le CSS
+  charge quand même via le `<link>`). `'strict-dynamic'` propage la
+  confiance du script noncé à ses imports (CSP3, ignoré sans casse par les
+  navigateurs CSP1/2).
 
 ## Attentes de collaboration
 
