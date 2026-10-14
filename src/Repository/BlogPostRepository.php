@@ -24,7 +24,10 @@ final class BlogPostRepository extends ServiceEntityRepository
     public function findAllOrdered(): array
     {
         return $this->createQueryBuilder('p')
+            // id en départage : deux articles publiés le même jour doivent
+            // rester dans l'ordre de création, pas dans un ordre arbitraire.
             ->orderBy('p.date', 'DESC')
+            ->addOrderBy('p.id', 'DESC')
             ->getQuery()
             ->getResult();
     }

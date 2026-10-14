@@ -86,6 +86,17 @@ final class BlogPostRepositoryTest extends KernelTestCase
         self::assertLessThan(array_search('older', $slugs, true), array_search('newer', $slugs, true));
     }
 
+    public function testPostsWithTheSameDateAreOrderedByMostRecentlyCreatedFirst(): void
+    {
+        $sameDate = new \DateTimeImmutable('2026-10-14');
+        $this->persist($this->entity(slug: 'created-first', date: $sameDate));
+        $this->persist($this->entity(slug: 'created-second', date: $sameDate));
+
+        $slugs = array_map(static fn ($post) => $post->slug, $this->repository->all('fr'));
+
+        self::assertLessThan(array_search('created-first', $slugs, true), array_search('created-second', $slugs, true));
+    }
+
     private function entity(
         string $slug = 'hello-world',
         string $titleFr = 'Bonjour',

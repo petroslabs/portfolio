@@ -7,6 +7,10 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 ## [Non publié]
 
 ### Corrigé
+- Tri des articles de blog (`BlogPostRepository::findAllOrdered()`) : deux
+  articles publiés le même jour (`date` identique) n'avaient pas d'ordre
+  garanti entre eux. Ajout de `p.id DESC` en départage — le plus récemment
+  créé passe devant.
 - CSP de production : les 3 `<script>` générés par `importmap()` (import map,
   shim de secours, bootstrap Stimulus) étaient bloqués en silence —
   `script-src` est identique à `default-src` ('self'), donc nelmio le
