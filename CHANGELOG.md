@@ -6,6 +6,14 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 
 ## [Non publié]
 
+### Corrigé
+- `symfony/expression-language`, `symfony/http-foundation` et `symfony/yaml`
+  mis à jour vers 8.1.9/8.1.9/8.1.9 : 3 CVE publiées le 14/10/2026 (déni de
+  service par récursion/imbrication non bornée dans le parseur d'expression
+  et le lexer YAML, ReDoS dans `HeaderUtils::split()`). Trouvé par `composer
+  audit` en CI sur un push sans rapport — patchs dans la contrainte `8.1.*`
+  déjà fixée, aucun changement de code nécessaire.
+
 ### Ajouté
 - Projets Homelab (épinglé) et DiagValise sur `/projects` : infra Proxmox
   personnelle et valise de diagnostic automobile sur Raspberry Pi 5, pas de
