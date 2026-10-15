@@ -94,6 +94,23 @@
         {{ project.content|localized|markdown }}
     </main>
 
+    {% if relatedPosts|length %}
+        <twig:Meander class="my-10 animate-rise sm:my-12" />
+
+        <section>
+            <h2 class="mb-4 text-center font-mono text-xs uppercase tracking-[0.3em] text-parchment-dim">
+                <span class="text-teal">//</span> {{ 'projects.related_posts'|trans }}
+            </h2>
+            <ul class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                {% for post in relatedPosts %}
+                    <li class="animate-rise" style="animation-delay: {{ 80 + loop.index0 * 60 }}ms">
+                        <twig:PostCard slug="{{ post.slug }}" title="{{ post.title }}" summary="{{ post.summary }}" :date="post.date" />
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+
     <twig:Meander class="my-10 sm:my-12" />
 
     <twig:SiteFooter />

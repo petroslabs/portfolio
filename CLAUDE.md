@@ -219,6 +219,12 @@ ponctuelles, écrites au cas par cas selon le besoin.
   interactif, trouve l'article par slug pour savoir s'il crée ou met à
   jour) plutôt qu'une migration à la main — le contenu FR/EN se rédige dans
   un fichier Markdown à part, la commande ne fait que lire le chemin donné.
+  Un article peut être lié à un projet (`BlogPost::project`, `ManyToOne`
+  nullable, `onDelete: SET NULL`) — la commande le demande (slug, validé
+  contre les projets existants). Affiché dans les deux sens : lien vers le
+  projet sur l'article (`blog/show.html.twig`), liste des articles liés sur
+  la fiche projet (`projects/show.html.twig`, via
+  `App\Blog\BlogPostRepository::findByProject()`).
 - Toutes ces entités sont passées de fichiers (YAML/Markdown) à des tables
   Doctrine lors de leur migration initiale — aucune ne reste en fichiers.
 

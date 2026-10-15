@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Entity\BlogPost;
+use App\Entity\Project;
 use App\Repository\BlogPostRepository;
+use App\Repository\ProjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -25,6 +27,7 @@ final class BlogPostCommand extends Command
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly BlogPostRepository $posts,
+        private readonly ProjectRepository $projects,
     ) {
         parent::__construct();
     }
@@ -50,6 +53,7 @@ final class BlogPostCommand extends Command
         $post->setContentEn($this->readMarkdownFile($io, 'Contenu (EN)', $post->getContentEn()));
         $post->setCover($this->readOptionalText($io, 'Image de couverture (chemin, vide pour aucune)', $post->getCover()));
         $post->setDate($this->readDate($io, $post->getDate()));
+        $post->setProject($this->readProjectLink($io, $post->getProject()));
 
         $this->entityManager->persist($post);
         $this->entityManager->flush();
@@ -120,6 +124,36 @@ final class BlogPostCommand extends Command
             } catch (\Exception) {
                 $io->error('Date invalide — format attendu AAAA-MM-JJ.');
             }
+        }
+    }
+
+    private function readProjectLink(SymfonyStyle $io, ?Project $current): ?Project
+    {
+        $currentSlug = $current?->getSlug();
+
+        while (true) {
+            $question = $currentSlug
+                ? \sprintf('Projet lié (slug, vide pour garder "%s", "-" pour retirer)', $currentSlug)
+                : 'Projet lié (slug, vide si aucun)';
+            $answer = $io->ask($question);
+
+            if (!$answer) {
+                return $current;
+            }
+
+            if ('-' === $answer) {
+                return null;
+            }
+
+            $project = $this->projects->findOneBy(['slug' => $answer]);
+
+            if (!$project) {
+                $io->error(\sprintf('Aucun projet avec le slug "%s".', $answer));
+
+                continue;
+            }
+
+            return $project;
         }
     }
 }

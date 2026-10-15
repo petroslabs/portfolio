@@ -43,6 +43,15 @@
         {{ post.contentHtml|raw }}
     </main>
 
+    {% if post.projectSlug %}
+        <p class="mt-8 animate-rise text-center font-mono text-xs text-parchment-dim">
+            {{ 'blog.related_project'|trans }}
+            <a href="{{ path('app_project_show', {slug: post.projectSlug}) }}" class="text-teal transition-colors hover:text-teal-deep">
+                {{ post.projectName }}
+            </a>
+        </p>
+    {% endif %}
+
     <twig:Meander class="my-10 sm:my-12" />
 
     <twig:SiteFooter />

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Blog\BlogPostRepository;
 use App\Repository\ProjectRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -18,6 +20,8 @@ final class ProjectController extends AbstractController
 {
     public function __construct(
         private readonly ProjectRepository $projects,
+        private readonly BlogPostRepository $posts,
+        private readonly RequestStack $requestStack,
     ) {
     }
 
@@ -40,6 +44,12 @@ final class ProjectController extends AbstractController
 
         return $this->render('projects/show.html.twig', [
             'project' => $project,
+            'relatedPosts' => $this->posts->findByProject($slug, $this->locale()),
         ]);
+    }
+
+    private function locale(): string
+    {
+        return $this->requestStack->getCurrentRequest()?->getLocale() ?? 'fr';
     }
 }

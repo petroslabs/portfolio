@@ -31,4 +31,19 @@ final class BlogPostRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return list<BlogPost>
+     */
+    public function findByProjectSlug(string $projectSlug): array
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.project', 'project')
+            ->where('project.slug = :slug')
+            ->setParameter('slug', $projectSlug)
+            ->orderBy('p.date', 'DESC')
+            ->addOrderBy('p.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

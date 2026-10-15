@@ -14,6 +14,7 @@ projects:
     demo: 'Aperçu'
     pinned: 'Épinglé'
     back: 'les projets'
+    related_posts: 'Notes sur ce projet'
 
 uses:
     title: "L'établi"
@@ -29,6 +30,7 @@ blog:
     back: 'le blog'
     read_more: 'Lire l''article'
     empty: 'Aucun article pour le moment.'
+    related_project: 'Projet lié :'
 
 status:
     in_progress: 'En cours'

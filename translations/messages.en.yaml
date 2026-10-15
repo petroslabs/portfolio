@@ -14,6 +14,7 @@ projects:
     demo: 'Preview'
     pinned: 'Pinned'
     back: 'projects'
+    related_posts: 'Notes on this project'
 
 uses:
     title: 'The Workbench'
@@ -29,6 +30,7 @@ blog:
     back: 'the blog'
     read_more: 'Read the article'
     empty: 'No articles yet.'
+    related_project: 'Related project:'
 
 status:
     in_progress: 'In progress'

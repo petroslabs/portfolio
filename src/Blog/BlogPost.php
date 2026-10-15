@@ -16,6 +16,8 @@ final readonly class BlogPost
         public \DateTimeImmutable $date,
         public ?string $cover,
         public string $contentHtml,
+        public ?string $projectSlug = null,
+        public ?string $projectName = null,
     ) {
     }
 }

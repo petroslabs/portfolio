@@ -43,6 +43,10 @@ class BlogPost
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private \DateTimeImmutable $date;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Project $project = null;
+
     public function __construct()
     {
         $this->date = new \DateTimeImmutable('today');
@@ -157,6 +161,18 @@ class BlogPost
     public function setDate(\DateTimeImmutable $date): static
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function getProject(): ?Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): static
+    {
+        $this->project = $project;
 
         return $this;
     }

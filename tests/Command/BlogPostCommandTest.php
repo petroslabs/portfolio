@@ -6,6 +6,7 @@ namespace App\Tests\Command;
 
 use App\Command\BlogPostCommand;
 use App\Entity\BlogPost;
+use App\Entity\Project;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -47,6 +48,7 @@ final class BlogPostCommandTest extends KernelTestCase
             $this->tempMarkdownFile('Content **EN**.'),
             '',
             '2026-05-01',
+            '',
         ]);
 
         self::assertSame(0, $this->tester->execute([]));
@@ -81,6 +83,7 @@ final class BlogPostCommandTest extends KernelTestCase
             '', // contentEn -> gardé
             '', // cover -> gardé (aucun)
             $existing->getDate()->format('Y-m-d'),
+            '', // projet -> gardé (aucun)
         ]);
 
         self::assertSame(0, $this->tester->execute([]));
@@ -104,10 +107,70 @@ final class BlogPostCommandTest extends KernelTestCase
             $this->tempMarkdownFile('EN'),
             '',
             '2026-01-01',
+            '',
         ]);
 
         self::assertSame(0, $this->tester->execute([]));
         self::assertStringContainsString('Slug invalide', $this->tester->getDisplay());
+    }
+
+    public function testLinksPostToAnExistingProject(): void
+    {
+        $this->entityManager->persist($this->project('fixture-project-a'));
+        $this->entityManager->flush();
+
+        $this->tester->setInputs([
+            'linked-post',
+            'Titre',
+            'Title',
+            'Résumé',
+            'Summary',
+            $this->tempMarkdownFile('FR'),
+            $this->tempMarkdownFile('EN'),
+            '',
+            '2026-01-01',
+            'fixture-project-a',
+        ]);
+
+        self::assertSame(0, $this->tester->execute([]));
+
+        $post = $this->entityManager->getRepository(BlogPost::class)->findOneBy(['slug' => 'linked-post']);
+        self::assertNotNull($post?->getProject());
+        self::assertSame('fixture-project-a', $post->getProject()->getSlug());
+    }
+
+    public function testRejectsUnknownProjectSlugThenAcceptsRetry(): void
+    {
+        $this->entityManager->persist($this->project('fixture-project-b'));
+        $this->entityManager->flush();
+
+        $this->tester->setInputs([
+            'another-post',
+            'Titre',
+            'Title',
+            'Résumé',
+            'Summary',
+            $this->tempMarkdownFile('FR'),
+            $this->tempMarkdownFile('EN'),
+            '',
+            '2026-01-01',
+            'does-not-exist',
+            'fixture-project-b',
+        ]);
+
+        self::assertSame(0, $this->tester->execute([]));
+        self::assertStringContainsString('Aucun projet avec le slug', $this->tester->getDisplay());
+
+        $post = $this->entityManager->getRepository(BlogPost::class)->findOneBy(['slug' => 'another-post']);
+        self::assertSame('fixture-project-b', $post?->getProject()?->getSlug());
+    }
+
+    private function project(string $slug): Project
+    {
+        return (new Project())
+            ->setSlug($slug)
+            ->setName($slug)
+            ->setImage('images/projects/placeholder.webp');
     }
 
     private function tempMarkdownFile(string $content): string

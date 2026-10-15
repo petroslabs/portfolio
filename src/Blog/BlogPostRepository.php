@@ -46,8 +46,21 @@ final class BlogPostRepository
         return $post ? $this->toDto($post, $locale) : null;
     }
 
+    /**
+     * @return list<BlogPost>
+     */
+    public function findByProject(string $projectSlug, string $locale): array
+    {
+        return array_map(
+            fn (BlogPostEntity $post): BlogPost => $this->toDto($post, $locale),
+            $this->posts->findByProjectSlug($projectSlug),
+        );
+    }
+
     private function toDto(BlogPostEntity $post, string $locale): BlogPost
     {
+        $project = $post->getProject();
+
         return new BlogPost(
             slug: $post->getSlug(),
             title: $this->resolve($locale, $post->getTitleFr(), $post->getTitleEn()),
@@ -55,6 +68,8 @@ final class BlogPostRepository
             date: $post->getDate(),
             cover: $post->getCover(),
             contentHtml: (string) $this->converter->convert($this->resolve($locale, $post->getContentFr(), $post->getContentEn())),
+            projectSlug: $project?->getSlug(),
+            projectName: $project?->getName(),
         );
     }
 

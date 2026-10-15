@@ -6,6 +6,19 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 
 ## [Non publié]
 
+### Ajouté
+- Projets Homelab (épinglé) et DiagValise sur `/projects` : infra Proxmox
+  personnelle et valise de diagnostic automobile sur Raspberry Pi 5, pas de
+  lien repo/démo (dépôts privés).
+- Lien entre articles de blog et projets (`BlogPost::project`, `ManyToOne`
+  nullable) : un article peut concerner un projet. Affiché dans les deux
+  sens — lien vers le projet sur l'article, liste des articles liés sur la
+  fiche projet. `app:blog:post` demande désormais le slug du projet lié
+  (optionnel, validé). Articles « DiagValise » et « Homelab » liés à leurs
+  projets respectifs.
+- Deux premiers articles de blog : « DiagValise » et « Le homelab »,
+  présentations des projets perso (pas de deep-dive technique encore).
+
 ### Corrigé
 - Tri des articles de blog (`BlogPostRepository::findAllOrdered()`) : deux
   articles publiés le même jour (`date` identique) n'avaient pas d'ordre

@@ -6,6 +6,7 @@ namespace App\Tests\Blog;
 
 use App\Blog\BlogPostRepository;
 use App\Entity\BlogPost as BlogPostEntity;
+use App\Entity\Project;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -95,6 +96,40 @@ final class BlogPostRepositoryTest extends KernelTestCase
         $slugs = array_map(static fn ($post) => $post->slug, $this->repository->all('fr'));
 
         self::assertLessThan(array_search('created-first', $slugs, true), array_search('created-second', $slugs, true));
+    }
+
+    public function testFindResolvesTheLinkedProject(): void
+    {
+        $project = (new Project())->setSlug('fixture-project-a')->setName('Fixture Project A')->setImage('images/projects/placeholder.webp');
+        $this->entityManager->persist($project);
+        $this->persist($this->entity()->setProject($project));
+
+        $resolved = $this->repository->find('hello-world', 'fr');
+
+        self::assertSame('fixture-project-a', $resolved?->projectSlug);
+        self::assertSame('Fixture Project A', $resolved?->projectName);
+    }
+
+    public function testFindReturnsNullProjectWhenNoneIsLinked(): void
+    {
+        $this->persist($this->entity());
+
+        $resolved = $this->repository->find('hello-world', 'fr');
+
+        self::assertNull($resolved?->projectSlug);
+        self::assertNull($resolved?->projectName);
+    }
+
+    public function testFindByProjectReturnsOnlyPostsLinkedToThatProject(): void
+    {
+        $project = (new Project())->setSlug('fixture-project-b')->setName('Fixture Project B')->setImage('images/projects/placeholder.webp');
+        $this->entityManager->persist($project);
+        $this->persist($this->entity(slug: 'linked')->setProject($project));
+        $this->persist($this->entity(slug: 'unlinked'));
+
+        $slugs = array_map(static fn ($post) => $post->slug, $this->repository->findByProject('fixture-project-b', 'fr'));
+
+        self::assertSame(['linked'], $slugs);
     }
 
     private function entity(
