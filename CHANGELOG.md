@@ -15,6 +15,12 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
   déjà fixée, aucun changement de code nécessaire.
 
 ### Ajouté
+- Projet FR Validator sur `/projects` : `petroslabs/fr-validator` (validateurs
+  PHP pour identifiants français, sans dépendance framework) et
+  `petroslabs/fr-validator-symfony` (pont Symfony Validator), présentés
+  ensemble. Lien repo vers `fr-validator`, les 4 liens (2 GitHub + 2
+  Packagist) repris dans la description — pas de champ dédié pour des liens
+  multiples, pas ajouté pour ce seul cas.
 - Projets Homelab (épinglé) et DiagValise sur `/projects` : infra Proxmox
   personnelle et valise de diagnostic automobile sur Raspberry Pi 5, pas de
   lien repo/démo (dépôts privés).
